@@ -3,7 +3,7 @@
 	templated.co @templatedco
 	Released for free under the Creative Commons Attribution 3.0 license (templated.co/license)
 */
-/*
+
 $(function() {
 
 	// Vars.
@@ -19,7 +19,7 @@ $(function() {
 			small:	'(max-width: 736px)',
 			xsmall:	'(max-width: 480px)'
 		});
-/*
+
 	// Disable animations/transitions until everything's loaded.
 		$body.addClass('is-loading');
 
@@ -44,6 +44,6 @@ $(function() {
 				windowMargin: (skel.breakpoint('small').active ? 5 : 50)
 			});*/
 
-		/*});
+		});
 
-});*/
+});
