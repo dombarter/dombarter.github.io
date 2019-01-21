@@ -1398,6 +1398,7 @@
 
 	body {
 		-ms-overflow-style: scrollbar;
+		font-family: 'Source Sans Pro', sans-serif;
 	}
 
 	@media screen and (max-width: 480px) {
