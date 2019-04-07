@@ -10,8 +10,8 @@ highlighter:      pygments
 title:            Dom Barter
 tagline:          'Computer Scientist'
 description:      'A-Level Computer Scientist, programmer and robotics enthusiast.'
-url:              https://dombarter.github.io/
-baseurl:          
+url:              /
+baseurl:          /
  
 author:
   name:           'Dom Barter'
