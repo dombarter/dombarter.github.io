@@ -1,0 +1,29 @@
+# Dependencies
+markdown:         redcarpet
+highlighter:      pygments
+
+# # Permalinks
+# permalink:        pretty
+# relative_permalinks: true
+
+# Setup
+title:            Dom Barter
+tagline:          'Computer Scientist'
+description:      'A-Level Computer Scientist, programmer and robotics enthusiast.'
+url:              https://dombarter.github.io/
+baseurl:          /
+ 
+author:
+  name:           'Dom Barter'
+
+plugins:
+  - jekyll-paginate
+  - jekyll-gist
+
+paginate:         5
+
+# Custom vars
+version:          1.0.0
+
+github:
+  repo:           https://github.com/dombarter/dombarter.github.io
