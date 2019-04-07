@@ -1,37 +1,75 @@
----
-layout: default
-title: Home
----
+<!DOCTYPE HTML>
+<html>
+	<head>
+		<title>Dom Barter</title>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<link rel="stylesheet" href="assets/css/main.css" />
+		<link rel="shortcut icon" href="images/fav.png">
+	</head>
+	<body>
 
-<div class="posts">
-  {% for post in paginator.posts %}
-  <div class="post">
-    <h1 class="post-title">
-      <a href="{{ post.url }}">
-        {{ post.title }}
-      </a>
-    </h1>
+		<!-- Wrapper -->
+			<div id="wrapper">
 
-    <span class="post-date">{{ post.date | date_to_string }}</span>
+				<!-- Header -->
+					<header id="header">
+						<span class="avatar"><img src="images/avatar.jpg" alt="avatar" /></span>
+						<h1> I am <strong>Dom Barter</strong>, A-Level Computer Scientist, programmer and robotics enthusiast.</h1>
+						<ul class="icons">
+							<li><a href="https://twitter.com/DomBarter" target="_blank" class="icon style2 fa-twitter"><span class="label">Twitter</span></a></li>
+							<li><a href="https://www.facebook.com/dominic.barter.7" target="_blank" class="icon style2 fa-facebook"><span class="label">Facebook</span></a></li>
+							<li><a href="https://www.instagram.com/dombarter/" target="_blank" class="icon style2 fa-instagram"><span class="label">Instagram</span></a></li>
+							<li><a href="https://github.com/dombarter" target="_blank" class="icon style2 fa-github"><span class="label">500px</span></a></li>
+							<li><a href="mailto:domtheprogrammer@gmail.com" target="_blank" class="icon style2 fa-envelope-o"><span class="label">Email</span></a></li>
+						</ul>
+					</header>
 
-    {{ post.desc }}
-  </div>
-  {% endfor %}
-</div>
+				<!-- Main -->
+					<section id="main">
 
-<div class="pagination">
-  {% if paginator.next_page %}
-    <a class="pagination-item older" href="{{ site.baseurl }}page{{paginator.next_page}}">Older</a>
-  {% else %}
-    <span class="pagination-item older">Older</span>
-  {% endif %}
-  {% if paginator.previous_page %}
-    {% if paginator.page == 2 %}
-      <a class="pagination-item newer" href="{{ site.baseurl }}">Newer</a>
-    {% else %}
-      <a class="pagination-item newer" href="{{ site.baseurl }}page{{paginator.previous_page}}">Newer</a>
-    {% endif %}
-  {% else %}
-    <span class="pagination-item newer">Newer</span>
-  {% endif %}
-</div>
+						<!-- Thumbnails -->
+							<section class="thumbnails">
+								<div>
+									<a href="https://dombarter.github.io/llama/" target="_blank">
+										<img src="images/thumbs/llamas.png" />
+										<h3>Llamas. Just lots of llamas</h3>
+									</a>
+									<a href="" target="_blank">
+										<img src="images/thumbs/conesandmogo.png" />
+										<h3>Vex Robotics</h3>
+									</a>
+								</div>
+								<div>
+									<a href="https://dombarter.github.io/acf/" target="_blank">
+										<img src="images/thumbs/acf.png" />
+										<h3>ACF Game</h3>
+									</a>
+									<a href="" target="_blank">
+										<img src="images/thumbs/razor.png" />
+										<h3>Razor Jam Web App</h3>
+									</a>
+								</div>
+								<div>
+									<a href="https://dombarter.github.io/interactive-graph/graph/" target="_blank">
+										<img src="images/thumbs/graph.png" />
+										<h3>Interactive Graph</h3>
+									</a>
+									<a href="https://play.google.com/store/apps/details?id=com.utc.Theos.Trail" target="_blank">
+										<img src="images/thumbs/theo.jpg" />
+										<h3>Theo's Trail</h3>
+									</a>
+								</div>
+							</section>
+
+					</section>
+
+				<!-- Footer -->
+					<footer id="footer">
+						<p>Design by <a href="http://templated.co">TEMPLATED</a></p>
+					</footer>
+
+			</div>
+
+	</body>
+</html>
