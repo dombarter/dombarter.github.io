@@ -4,7 +4,7 @@
  <title>Dom Barter</title>
  <link href="https://dombarter.github.io/atom.xml" rel="self"/>
  <link href="https://dombarter.github.io/"/>
- <updated>2019-04-08T10:05:07+00:00</updated>
+ <updated>2019-04-08T10:05:32+00:00</updated>
  <id>https://dombarter.github.io</id>
  <author>
    <name>Dom Barter</name>
@@ -39,6 +39,8 @@
 &lt;h2&gt;Find Out More&lt;/h2&gt;
 
 &lt;p&gt;Check out Razor&amp;#39;s Official Website &lt;a href=&quot;https://www.razor.co.uk/&quot;&gt;here&lt;/a&gt;&lt;/p&gt;
+
+&lt;h2&gt;Images&lt;/h2&gt;
 
 &lt;p&gt;&lt;img src=&quot;../public/razor-home.png&quot; alt=&quot;Razor-Home&quot;&gt;
 &lt;img src=&quot;../public/razor-login.png&quot; alt=&quot;Razor-Login&quot;&gt;&lt;/p&gt;
