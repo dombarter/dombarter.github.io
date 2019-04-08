@@ -4,7 +4,7 @@
  <title>Dom Barter</title>
  <link href="https://dombarter.github.io/atom.xml" rel="self"/>
  <link href="https://dombarter.github.io/"/>
- <updated>2019-04-08T13:32:38+00:00</updated>
+ <updated>2019-04-08T14:34:07+00:00</updated>
  <id>https://dombarter.github.io</id>
  <author>
    <name>Dom Barter</name>
@@ -17,7 +17,19 @@
    <link href="https://dombarter.github.io/2018/07/01/theo-app.html"/>
    <updated>2018-07-01T00:00:00+00:00</updated>
    <id>https://dombarter.github.io/2018/07/01/theo-app</id>
-   <content type="html">&lt;p&gt;Coming Soon...&lt;/p&gt;
+   <content type="html">&lt;h2&gt;Summary&lt;/h2&gt;
+
+&lt;p&gt;We were approached by The Sheffield Children&amp;#39;s Hospital along with Olympic Legacy Park to create an app to support the Sheffield driven &amp;#39;move more&amp;#39; campaign along with the Hospital&amp;#39;s golden hour campaign. We worked with AMRC to create an augmented reality mobile app for families visiting the park. &lt;/p&gt;
+
+&lt;p&gt;At strategically placed points around the park the user will be presented with some information about the park followed by an AR view where Theo the bear will appear and begin doing squats, star jump, lunges etc. This AR view gives the family the chance to take pictures with the bear and get involved by copying the activity. The aim of the game is to visit all the points around the park in the &amp;#39;golden hour&amp;#39;. If they achieve this goal, they will receive a free skating voucher courtesy of ice Sheffield and will also be given more information about donating and supporting the golden hour cause.&lt;/p&gt;
+
+&lt;h2&gt;Technologies Used&lt;/h2&gt;
+
+&lt;p&gt;The app was built using C# and devloped in Unity. It is available for Android and iOS&lt;/p&gt;
+
+&lt;h2&gt;Find Out More&lt;/h2&gt;
+
+&lt;p&gt;The Official Google Play Store Listing is &lt;a href=&quot;https://play.google.com/store/apps/details?id=com.utc.Theos.Trail&quot;&gt;here&lt;/a&gt;&lt;/p&gt;
 </content>
  </entry>
  
