@@ -4,7 +4,7 @@
  <title>Dom Barter</title>
  <link href="https://dombarter.github.io/atom.xml" rel="self"/>
  <link href="https://dombarter.github.io/"/>
- <updated>2019-04-08T13:05:31+00:00</updated>
+ <updated>2019-04-08T13:20:18+00:00</updated>
  <id>https://dombarter.github.io</id>
  <author>
    <name>Dom Barter</name>
@@ -42,8 +42,23 @@
 
 &lt;h2&gt;Images&lt;/h2&gt;
 
-&lt;p&gt;&lt;img src=&quot;https://github.com/dombarter/dombarter.github.io/blob/release/public/razor-home.png&quot; alt=&quot;Razor-Home&quot;&gt;
-&lt;img src=&quot;https://github.com/dombarter/dombarter.github.io/blob/release/public/razor-login.png&quot; alt=&quot;Razor-Login&quot;&gt;&lt;/p&gt;
+&lt;hr&gt;
+
+&lt;p&gt;&lt;em&gt;The home page of the application - where technologies and products can be viewed/created/deleted&lt;/em&gt;  &lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/img/razor/razor-home.png&quot; alt=&quot;Razor-Home&quot;&gt;  &lt;/p&gt;
+
+&lt;hr&gt;
+
+&lt;p&gt;&lt;em&gt;The login page of the application - where the user can login or sign up&lt;/em&gt;  &lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/img/razor/razor-login.png&quot; alt=&quot;Razor-Login&quot;&gt;&lt;/p&gt;
+
+&lt;hr&gt;
+
+&lt;p&gt;&lt;em&gt;The view page of the application - where the user can view the details and comments of a particular product/technology&lt;/em&gt;  &lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/img/razor/item-with-comment.png&quot; alt=&quot;Razor-View&quot;&gt;&lt;/p&gt;
 </content>
  </entry>
  
