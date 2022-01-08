@@ -1,1 +1,29 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml"><url><loc>https://dombarter.co.uk/</loc><lastmod>2022-01-08T16:39:10+00:00</lastmod></url><url><loc>https://dombarter.co.uk/posts/introduction-to-git-flow/</loc><lastmod>2022-01-08T16:39:10+00:00</lastmod></url><url><loc>https://dombarter.co.uk/posts/</loc><lastmod>2022-01-08T16:39:10+00:00</lastmod></url><url><loc>https://dombarter.co.uk/about/</loc><lastmod>2022-01-08T13:03:37+00:00</lastmod></url><url><loc>https://dombarter.co.uk/projects/project1/</loc><lastmod>2022-01-08T12:19:12+00:00</lastmod></url><url><loc>https://dombarter.co.uk/projects/</loc><lastmod>2022-01-08T12:19:12+00:00</lastmod></url><url><loc>https://dombarter.co.uk/categories/</loc></url><url><loc>https://dombarter.co.uk/search/</loc></url><url><loc>https://dombarter.co.uk/tags/</loc></url></urlset>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+  xmlns:xhtml="http://www.w3.org/1999/xhtml">
+  <url>
+    <loc>https://dombarter.co.uk/</loc>
+    <lastmod>2022-01-08T16:39:10+00:00</lastmod>
+  </url><url>
+    <loc>https://dombarter.co.uk/posts/introduction-to-git-flow/</loc>
+    <lastmod>2022-01-08T16:39:10+00:00</lastmod>
+  </url><url>
+    <loc>https://dombarter.co.uk/posts/</loc>
+    <lastmod>2022-01-08T16:39:10+00:00</lastmod>
+  </url><url>
+    <loc>https://dombarter.co.uk/about/</loc>
+    <lastmod>2022-01-08T13:03:37+00:00</lastmod>
+  </url><url>
+    <loc>https://dombarter.co.uk/projects/project1/</loc>
+    <lastmod>2022-01-08T12:19:12+00:00</lastmod>
+  </url><url>
+    <loc>https://dombarter.co.uk/projects/</loc>
+    <lastmod>2022-01-08T12:19:12+00:00</lastmod>
+  </url><url>
+    <loc>https://dombarter.co.uk/categories/</loc>
+  </url><url>
+    <loc>https://dombarter.co.uk/search/</loc>
+  </url><url>
+    <loc>https://dombarter.co.uk/tags/</loc>
+  </url>
+</urlset>
