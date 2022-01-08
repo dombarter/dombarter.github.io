@@ -8,12 +8,12 @@
     <language>en-gb</language>
     <lastBuildDate>Sat, 08 Jan 2022 12:19:12 +0000</lastBuildDate><atom:link href="https://dombarter.co.uk/projects/index.xml" rel="self" type="application/rss+xml" />
     <item>
-      <title>My Project</title>
-      <link>https://dombarter.co.uk/projects/my-project/</link>
+      <title>My First Project</title>
+      <link>https://dombarter.co.uk/projects/project1/</link>
       <pubDate>Sat, 08 Jan 2022 12:19:12 +0000</pubDate>
       
-      <guid>https://dombarter.co.uk/projects/my-project/</guid>
-      <description>My project This is a project</description>
+      <guid>https://dombarter.co.uk/projects/project1/</guid>
+      <description>This is a simple summary</description>
     </item>
     
   </channel>
