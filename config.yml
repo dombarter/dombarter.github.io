@@ -1,0 +1,59 @@
+baseURL: https://dombarter.co.uk/
+languageCode: en-gb
+title: Dom Barter
+theme: "PaperMod"
+
+buildDrafts: false
+buildFuture: false
+buildExpired: false
+enableEmoji: true
+
+paginate: 5
+
+languages:
+  en:
+    languageName: "English"
+    weight: 1
+    menu:
+      main:
+        - name: About
+          url: about/
+        - name: Projects
+          url: projects/
+        - name: Posts
+          url: posts/
+        - name: Search
+          url: search/
+
+outputs:
+  home:
+    - HTML
+    - RSS
+    - JSON # is necessary
+
+params:
+  env: "production" # to enable google analytics, opengraph, twitter-cards and schema.
+  description: "Dom (Dominic) Barter - Software Engineer"
+  mainSections: ["posts", "projects"]
+  defaultTheme: auto
+  ShowReadingTime: true
+  ShowBreadCrumbs: true
+  ShowCodeCopyButtons: true
+  showtoc: true
+  homeInfoParams:
+    Title: "Dom Barter - Software Engineer"
+    Content: >
+      Hi, I'm Dom!
+
+      - I'm a **Junior Software Engineer** studying Computer Science at the University of Sheffield whilst on placement at [3SQUARED](https://3squared.com/).
+
+      - I have a wide range of experience across different platforms, languages and frameworks but I am currently **specialising in C#, .NET and Vue.js** development.
+
+      - Feel free to look round the site and get in touch if you have any questions!
+  socialIcons:
+    - name: github
+      url: "https://github.com/dombarter"
+    - name: linkedin
+      url: "https://www.linkedin.com/in/dombarter/"
+    - name: email
+      url: "mailto:dominicbarter@gmail.com"
