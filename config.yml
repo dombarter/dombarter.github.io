@@ -34,6 +34,7 @@ outputs:
 params:
   env: "production" # to enable google analytics, opengraph, twitter-cards and schema.
   description: "Dom (Dominic) Barter - Software Engineer"
+  author: "Dom Barter"
   mainSections: ["posts", "projects"]
   defaultTheme: auto
   ShowReadingTime: true
