@@ -20,11 +20,32 @@ jobs:
         with:
           hugo-version: 'latest'
 
-      - name: Cleanup
-        run: rm -rf ./public
+      - name: Listing Part 1
+        run: ls -a
+        
+      - name: Listing Part 2
+        run: ls ./content/posts
+        
+      - name: Listing Part 3
+        run: ls ./public
+        
+      - name: Listing Part 4
+        run: ls ./public/posts
 
       - name: Build
         run: hugo --minify
+        
+      - name: Listing Part 1
+        run: ls -a
+        
+      - name: Listing Part 2
+        run: ls ./content/posts
+        
+      - name: Listing Part 3
+        run: ls ./public
+        
+      - name: Listing Part 4
+        run: ls ./public/posts
 
       - name: Deploy
         uses: peaceiris/actions-gh-pages@v3
