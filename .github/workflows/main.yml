@@ -29,7 +29,6 @@ jobs:
       - name: Postbuild Listings
         run: |
           pwd
-          ls 
           ls public
 
       - name: Deploy
