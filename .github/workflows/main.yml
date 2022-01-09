@@ -16,20 +16,16 @@ jobs:
       - uses: actions/checkout@v2
 
       - name: Install Hugo
-        run: brew install hugo
-        
-      - name: Prebuild Listings
-        run: |
-          pwd
-          ls 
+        uses: peaceiris/actions-hugo@v2
+        with:
+          hugo-version: "0.91.2"
+          extended: true
 
       - name: Build
         run: hugo
         
       - name: Postbuild Listings
-        run: |
-          pwd
-          ls public
+        run: ls public
 
       - name: Deploy
         uses: peaceiris/actions-gh-pages@v3
