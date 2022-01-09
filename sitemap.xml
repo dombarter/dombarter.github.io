@@ -3,12 +3,15 @@
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url>
     <loc>https://dombarter.co.uk/</loc>
-    <lastmod>2022-01-08T16:39:10+00:00</lastmod>
-  </url><url>
-    <loc>https://dombarter.co.uk/posts/introduction-to-git-flow/</loc>
-    <lastmod>2022-01-08T16:39:10+00:00</lastmod>
+    <lastmod>2022-01-09T16:22:18+00:00</lastmod>
   </url><url>
     <loc>https://dombarter.co.uk/posts/</loc>
+    <lastmod>2022-01-09T16:22:18+00:00</lastmod>
+  </url><url>
+    <loc>https://dombarter.co.uk/posts/semantic-versioning/</loc>
+    <lastmod>2022-01-09T16:22:18+00:00</lastmod>
+  </url><url>
+    <loc>https://dombarter.co.uk/posts/introduction-to-git-flow/</loc>
     <lastmod>2022-01-08T16:39:10+00:00</lastmod>
   </url><url>
     <loc>https://dombarter.co.uk/about/</loc>
