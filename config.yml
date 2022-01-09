@@ -56,5 +56,5 @@ params:
       url: "https://github.com/dombarter"
     - name: linkedin
       url: "https://www.linkedin.com/in/dombarter/"
-    - name: email
-      url: "mailto:dominicbarter@gmail.com"
+    # - name: email
+    #   url: "mailto:dominicbarter@gmail.com"
