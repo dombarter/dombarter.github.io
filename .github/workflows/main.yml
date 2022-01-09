@@ -17,9 +17,19 @@ jobs:
 
       - name: Install Hugo
         run: brew install hugo
+        
+      - name: Prebuild Listings
+        run: |
+          pwd
+          ls 
 
       - name: Build
         run: hugo
+        
+      - name: Postbuild Listings
+        run: |
+          pwd
+          ls 
 
       - name: Deploy
         uses: peaceiris/actions-gh-pages@v3
