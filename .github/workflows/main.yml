@@ -14,17 +14,16 @@ jobs:
     runs-on: ubuntu-latest
     steps:
 
-      - name: Checkout repository and update Hugo themes
-        uses: actions/checkout@v2
-        with:
-          submodules: true
-          fetch-depth: 0 # Fetch all history for .GitInfo and .Lastmod
+      - uses: actions/checkout@v2
 
       - name: Install Hugo
         uses: peaceiris/actions-hugo@v2
         with:
           hugo-version: "0.83.0"
           extended: true
+          
+      - name: Install PaperMod Theme
+        run: git clone https://github.com/adityatelange/hugo-PaperMod themes/PaperMod --depth=1
 
       - name: Build
         run: hugo
