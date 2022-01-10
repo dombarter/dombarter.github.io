@@ -42,7 +42,7 @@ I'll try to show you what the web application looked like, and how customers wen
 
 ### Login Page
 
-Customers could login and sign up via our secure login and register pages. We also had forgot password functionality that would sent out a reset password link with a 24 hour expiry. 
+Customers could login and sign up via our secure login and register pages. We also had forgot password functionality that would send out a reset password link with a 24 hour expiry. 
 
 ![Login page](/images/heatmaps-by-hexos/login.png)
 
@@ -106,7 +106,7 @@ Payments were processed through `Stripe`.
 
 ### Heatmap Download
 
-The user could then download a zip folder of images, in 4 definitions ranging from `512x512` to `3072x3072`. The images we then broken up into 5 maximum time filters, from 1 to 3 hours. 
+The user could then download a zip folder of images, in 4 definitions ranging from `512x512` to `3072x3072`. The images were then broken up into 5 maximum time filters, from 1 to 3 hours. 
 
 We also supplied the user with a GeoJSON file with all the heatmap data, so they could make their own images. 
 
