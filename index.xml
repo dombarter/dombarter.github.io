@@ -6,7 +6,16 @@
     <description>Recent content on Dom Barter</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-gb</language>
-    <lastBuildDate>Sun, 09 Jan 2022 16:22:18 +0000</lastBuildDate><atom:link href="https://dombarter.co.uk/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Mon, 10 Jan 2022 09:47:18 +0000</lastBuildDate><atom:link href="https://dombarter.co.uk/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Heatmaps By Hexos</title>
+      <link>https://dombarter.co.uk/projects/hexos/</link>
+      <pubDate>Mon, 10 Jan 2022 09:47:18 +0000</pubDate>
+      
+      <guid>https://dombarter.co.uk/projects/hexos/</guid>
+      <description>Running between 2019 and 2022, Hexos was a UK provider of realistic driving and public transport based heatmaps/travel-time maps for data visualisation.</description>
+    </item>
+    
     <item>
       <title>Semantic Versioning</title>
       <link>https://dombarter.co.uk/posts/semantic-versioning/</link>

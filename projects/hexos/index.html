@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+<html lang="en" dir="auto">
+
+<head><meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="robots" content="index, follow">
+<title>Heatmaps By Hexos | Dom Barter</title>
+<meta name="keywords" content="" />
+<meta name="description" content="Running between 2019 and 2022, Hexos was a UK provider of realistic driving and public transport based heatmaps/travel-time maps for data visualisation.">
+<meta name="author" content="Dom Barter">
+<link rel="canonical" href="https://dombarter.co.uk/projects/hexos/" />
+<link crossorigin="anonymous" href="/assets/css/stylesheet.min.c88963fe2d79462000fd0fb1b3737783c32855d340583e4523343f8735c787f0.css" integrity="sha256-yIlj/i15RiAA/Q&#43;xs3N3g8MoVdNAWD5FIzQ/hzXHh/A=" rel="preload stylesheet" as="style">
+<script defer crossorigin="anonymous" src="/assets/js/highlight.min.7680afc38aa6b15ddf158a4f3780b7b1f7dde7e91d26f073e6229bb7a0793c92.js" integrity="sha256-doCvw4qmsV3fFYpPN4C3sffd5&#43;kdJvBz5iKbt6B5PJI="
+    onload="hljs.initHighlightingOnLoad();"></script>
+<link rel="icon" href="https://dombarter.co.uk/favicon.ico">
+<link rel="icon" type="image/png" sizes="16x16" href="https://dombarter.co.uk/favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="https://dombarter.co.uk/favicon-32x32.png">
+<link rel="apple-touch-icon" href="https://dombarter.co.uk/apple-touch-icon.png">
+<link rel="mask-icon" href="https://dombarter.co.uk/safari-pinned-tab.svg">
+<meta name="theme-color" content="#2e2e33">
+<meta name="msapplication-TileColor" content="#2e2e33">
+<meta name="generator" content="Hugo 0.83.0" />
+<noscript>
+    <style>
+        #theme-toggle,
+        .top-link {
+            display: none;
+        }
+
+    </style>
+    <style>
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --theme: rgb(29, 30, 32);
+                --entry: rgb(46, 46, 51);
+                --primary: rgb(218, 218, 219);
+                --secondary: rgb(155, 156, 157);
+                --tertiary: rgb(65, 66, 68);
+                --content: rgb(196, 196, 197);
+                --hljs-bg: rgb(46, 46, 51);
+                --code-bg: rgb(55, 56, 62);
+                --border: rgb(51, 51, 51);
+            }
+
+            .list {
+                background: var(--theme);
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-track {
+                background: 0 0;
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-thumb {
+                border-color: var(--theme);
+            }
+        }
+
+    </style>
+</noscript><meta property="og:title" content="Heatmaps By Hexos" />
+<meta property="og:description" content="Running between 2019 and 2022, Hexos was a UK provider of realistic driving and public transport based heatmaps/travel-time maps for data visualisation." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://dombarter.co.uk/projects/hexos/" /><meta property="article:section" content="projects" />
+<meta property="article:published_time" content="2022-01-10T09:47:18&#43;00:00" />
+<meta property="article:modified_time" content="2022-01-10T09:47:18&#43;00:00" />
+
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Heatmaps By Hexos"/>
+<meta name="twitter:description" content="Running between 2019 and 2022, Hexos was a UK provider of realistic driving and public transport based heatmaps/travel-time maps for data visualisation."/>
+
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position":  1 ,
+      "name": "Projects",
+      "item": "https://dombarter.co.uk/projects/"
+    }, 
+    {
+      "@type": "ListItem",
+      "position":  2 ,
+      "name": "Heatmaps By Hexos",
+      "item": "https://dombarter.co.uk/projects/hexos/"
+    }
+  ]
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "Heatmaps By Hexos",
+  "name": "Heatmaps By Hexos",
+  "description": "Running between 2019 and 2022, Hexos was a UK provider of realistic driving and public transport based heatmaps/travel-time maps for data visualisation.",
+  "keywords": [
+    
+  ],
+  "articleBody": "What Is Hexos? Hexos is the name of my self-employed business, through which I develop web applications, mobile applications as well as provide general IT solutions.\nWhat Is ‘Heatmaps By Hexos’? Heatmaps by Hexos is one of the web/cloud applications I developed and ran between 2019 and 2022. It was a successful business that sold heatmap images to schools and colleges across the UK.\n Hexos has developed a service that can create heatmaps / travel time maps to visualise public transport and driving commute times travelling towards or from a central point within a given radius. Heatmaps can be generated for any time of day, any day of the week and any location in the United Kingdom.\n The Tech Stack The tech stack was as follows:\n Express web application - Node.js AWS Lambda micro-services - Node.js AWS SQS (Simple Queue Service) AWS DynamoDB (NoSQL Object Database) Bootstrap Front-End Leaflet.js Map Provider Google Maps Directions API  An Example Of The End Product The main product that Heatmaps By Hexos generated was a selection of high definition images (also viewable as a interactive online version) - showing the travel times for the given configuration (postcode, day of the week, time of the day, transit type etc).\nHere is an example:\nA Guide Around The Web Application I’ll try to show you what the web application looked like, and how customers went through the process of requesting a heatmap from us.\nLogin Page Customers could login and sign up via our secure login and register pages. We also had forgot password functionality that would sent out a reset password link with a 24 hour expiry.\nDashboard On the dashboard, the user had access to all the heatmaps they had previously or actively requested. Each heatmap was described by the postcode it represented. You could track the status of a heatmap if it was currently in the process of being generated, and once generated, view the interactive heatmap or download the images.\nRequest Heatmap On this page, the customer used pre-purchased credits to request a heatmap, by defining multiple settings:\nThe size of the heatmap defined the maximum search radius - that is, how far the algorithm would search for possible routes. The postcode represented the centre of the heatmap, either where all journeys started or finished. The map would update to place a pin at the postcode they had picked. The journeys could either be calculated by using routes taken by car, or routes taken public transport.\nThey then had to decide whether the heatmap was inbound or outbound. Inbound heatmaps would consider the latest time required to leave at a location to arrive at the centre by a given time. Outbound heatmaps would consider the earliest time you could arrive at a point, given you left the centre at a given time. The arrival or departure time would need to be set dependant on if they had picked an inbound or outbound heatmap. The day of the week then had to be picked, so that the algorithm could look at relevant routes. For example traffic may be worse in the week, or public transport not as frequent on a weekend. The user then had to submit their request - at which point the heatmap would begin processing on the AWS cloud system. When the user requested a heatmap they would receive an email: And another email when the heatmap was ready. Interactive Heatmap Viewer The interactive heatmap viewer was very similar to the downloadable images, except it let you zoom in much further, click on any cell to get specific route information, and change the maximum time filter.\nAccount Settings There was also an account settings page where you could view all the information we stored, as well as change useful settings such as turning email updates off.\nPurchase Credits Customers had to buy credits through the online dashboard that would then be credited to their account. They could then use these credits against eligible heatmap requests.\nFor example a city heatmap would cost 2 credits.\nPayments were processed through Stripe.\nHeatmap Download The user could then download a zip folder of images, in 4 definitions ranging from 512x512 to 3072x3072. The images we then broken up into 5 maximum time filters, from 1 to 3 hours.\nWe also supplied the user with a GeoJSON file with all the heatmap data, so they could make their own images.\nWhat Has Happened To ‘Heatmaps By Hexos’ Now? Heatmaps by Hexos was a successful business that sold heatmap images to schools and colleges across the UK. They used these images to find new recruitment areas for students to come from that they hadn’t previously considered.\nIn 2022 I made the tough decision to shut this service down in order to focus on my professional development as a software engineer in industry. Other factors included the increasing time required to maintain the online service, especially with the speed at which frameworks such as Node.js are moving.\nI learnt invaluable lessons whilst building this product as well as building my network of connections, and I am sure that this is not the last we will see of Hexos!\nOther Resources \u0026 Information These items are considered as archived - but give some extra details about specific parts of Heatmaps by Hexos, and therefore may be of interest. These items were mainly used as marketing material.\nSheffield Digital Interview \nHeatmap Handbook The Heatmap Handbook\nService Overview Service Overview\nExample Heatmap Download heatmap.zip\n",
+  "wordCount" : "915",
+  "inLanguage": "en",
+  "datePublished": "2022-01-10T09:47:18Z",
+  "dateModified": "2022-01-10T09:47:18Z",
+  "author":{
+    "@type": "Person",
+    "name": "Dom Barter"
+  },
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "https://dombarter.co.uk/projects/hexos/"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "Dom Barter",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https://dombarter.co.uk/favicon.ico"
+    }
+  }
+}
+</script>
+</head>
+
+<body class="" id="top">
+<script>
+    if (localStorage.getItem("pref-theme") === "dark") {
+        document.body.classList.add('dark');
+    } else if (localStorage.getItem("pref-theme") === "light") {
+        document.body.classList.remove('dark')
+    } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        document.body.classList.add('dark');
+    }
+
+</script>
+
+<header class="header">
+    <nav class="nav">
+        <div class="logo">
+            <a href="https://dombarter.co.uk/" accesskey="h" title="Dom Barter (Alt + H)">Dom Barter</a>
+            <span class="logo-switches">
+                <button id="theme-toggle" accesskey="t" title="(Alt + T)">
+                    <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                    </svg>
+                    <svg id="sun" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="5"></circle>
+                        <line x1="12" y1="1" x2="12" y2="3"></line>
+                        <line x1="12" y1="21" x2="12" y2="23"></line>
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                        <line x1="1" y1="12" x2="3" y2="12"></line>
+                        <line x1="21" y1="12" x2="23" y2="12"></line>
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                    </svg>
+                </button>
+            </span>
+        </div>
+        <ul id="menu">
+            <li>
+                <a href="https://dombarter.co.uk/about/" title="About">
+                    <span>About</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://dombarter.co.uk/posts/" title="Posts">
+                    <span>Posts</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://dombarter.co.uk/projects/" title="Projects">
+                    <span>Projects</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://dombarter.co.uk/search/" title="Search (Alt &#43; /)" accesskey=/>
+                    <span>Search</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+</header>
+<main class="main">
+
+<article class="post-single">
+  <header class="post-header">
+    <div class="breadcrumbs"><a href="https://dombarter.co.uk/">Home</a>&nbsp;»&nbsp;<a href="https://dombarter.co.uk/projects/">Projects</a></div>
+    <h1 class="post-title">
+      Heatmaps By Hexos
+    </h1>
+    <div class="post-meta"><span title='2022-01-10 09:47:18 +0000 UTC'>January 10, 2022</span>&nbsp;·&nbsp;5 min&nbsp;·&nbsp;Dom Barter
+
+</div>
+  </header> <div class="toc">
+    <details >
+        <summary accesskey="c" title="(Alt + C)">
+            <span class="details">Table of Contents</span>
+        </summary>
+
+        <div class="inner"><ul>
+                <li>
+                    <a href="#what-is-hexos" aria-label="What Is Hexos?">What Is Hexos?</a></li>
+                <li>
+                    <a href="#what-is-heatmaps-by-hexos" aria-label="What Is &amp;lsquo;Heatmaps By Hexos&amp;rsquo;?">What Is &lsquo;Heatmaps By Hexos&rsquo;?</a></li>
+                <li>
+                    <a href="#the-tech-stack" aria-label="The Tech Stack">The Tech Stack</a></li>
+                <li>
+                    <a href="#an-example-of-the-end-product" aria-label="An Example Of The End Product">An Example Of The End Product</a></li>
+                <li>
+                    <a href="#a-guide-around-the-web-application" aria-label="A Guide Around The Web Application">A Guide Around The Web Application</a><ul>
+                        
+                <li>
+                    <a href="#login-page" aria-label="Login Page">Login Page</a></li>
+                <li>
+                    <a href="#dashboard" aria-label="Dashboard">Dashboard</a></li>
+                <li>
+                    <a href="#request-heatmap" aria-label="Request Heatmap">Request Heatmap</a></li>
+                <li>
+                    <a href="#interactive-heatmap-viewer" aria-label="Interactive Heatmap Viewer">Interactive Heatmap Viewer</a></li>
+                <li>
+                    <a href="#account-settings" aria-label="Account Settings">Account Settings</a></li>
+                <li>
+                    <a href="#purchase-credits" aria-label="Purchase Credits">Purchase Credits</a></li>
+                <li>
+                    <a href="#heatmap-download" aria-label="Heatmap Download">Heatmap Download</a></li></ul>
+                </li>
+                <li>
+                    <a href="#what-has-happened-to-heatmaps-by-hexos-now" aria-label="What Has Happened To &amp;lsquo;Heatmaps By Hexos&amp;rsquo; Now?">What Has Happened To &lsquo;Heatmaps By Hexos&rsquo; Now?</a></li>
+                <li>
+                    <a href="#other-resources--information" aria-label="Other Resources &amp;amp; Information">Other Resources &amp; Information</a><ul>
+                        
+                <li>
+                    <a href="#sheffield-digital-interview" aria-label="Sheffield Digital Interview">Sheffield Digital Interview</a></li>
+                <li>
+                    <a href="#heatmap-handbook" aria-label="Heatmap Handbook">Heatmap Handbook</a></li>
+                <li>
+                    <a href="#service-overview" aria-label="Service Overview">Service Overview</a></li>
+                <li>
+                    <a href="#example-heatmap-download" aria-label="Example Heatmap Download">Example Heatmap Download</a>
+                </li>
+            </ul>
+            </li>
+            </ul>
+        </div>
+    </details>
+</div>
+
+  <div class="post-content"><p><img loading="lazy" src="/images/heatmaps-by-hexos/heatmap-cover.png" alt="Heatmap"  />
+</p>
+<h2 id="what-is-hexos">What Is Hexos?<a hidden class="anchor" aria-hidden="true" href="#what-is-hexos">#</a></h2>
+<p>Hexos is the name of my self-employed business, through which I develop web applications, mobile applications as well as provide general IT solutions.</p>
+<h2 id="what-is-heatmaps-by-hexos">What Is &lsquo;Heatmaps By Hexos&rsquo;?<a hidden class="anchor" aria-hidden="true" href="#what-is-heatmaps-by-hexos">#</a></h2>
+<p>Heatmaps by Hexos is one of the web/cloud applications I developed and ran between 2019 and 2022. It was a successful business that sold heatmap images to schools and colleges across the UK.</p>
+<blockquote>
+<p>Hexos has developed a service that can create heatmaps / travel time maps to visualise public transport and driving commute times travelling towards or from a central point within a given radius. Heatmaps can be generated for any time of day, any day of the week and any location in the United Kingdom.</p>
+</blockquote>
+<h2 id="the-tech-stack">The Tech Stack<a hidden class="anchor" aria-hidden="true" href="#the-tech-stack">#</a></h2>
+<p>The tech stack was as follows:</p>
+<ul>
+<li>Express web application - Node.js</li>
+<li>AWS Lambda micro-services - Node.js</li>
+<li>AWS SQS (Simple Queue Service)</li>
+<li>AWS DynamoDB (NoSQL Object Database)</li>
+<li>Bootstrap Front-End</li>
+<li>Leaflet.js Map Provider</li>
+<li>Google Maps Directions API</li>
+</ul>
+<h2 id="an-example-of-the-end-product">An Example Of The End Product<a hidden class="anchor" aria-hidden="true" href="#an-example-of-the-end-product">#</a></h2>
+<p>The main product that Heatmaps By Hexos generated was a selection of high definition images (also viewable as a interactive online version) - showing the travel times for the given configuration (postcode, day of the week, time of the day, transit type etc).</p>
+<p>Here is an example:</p>
+<p><img loading="lazy" src="/images/heatmaps-by-hexos/heatmap-2048.png" alt="Example heatmap"  />
+</p>
+<h2 id="a-guide-around-the-web-application">A Guide Around The Web Application<a hidden class="anchor" aria-hidden="true" href="#a-guide-around-the-web-application">#</a></h2>
+<p>I&rsquo;ll try to show you what the web application looked like, and how customers went through the process of requesting a heatmap from us.</p>
+<h3 id="login-page">Login Page<a hidden class="anchor" aria-hidden="true" href="#login-page">#</a></h3>
+<p>Customers could login and sign up via our secure login and register pages. We also had forgot password functionality that would sent out a reset password link with a 24 hour expiry.</p>
+<p><img loading="lazy" src="/images/heatmaps-by-hexos/login.png" alt="Login page"  />
+</p>
+<h3 id="dashboard">Dashboard<a hidden class="anchor" aria-hidden="true" href="#dashboard">#</a></h3>
+<p>On the dashboard, the user had access to all the heatmaps they had previously or actively requested. Each heatmap was described by the postcode it represented. You could track the status of a heatmap if it was currently in the process of being generated, and once generated, view the interactive heatmap or download the images.</p>
+<p><img loading="lazy" src="/images/heatmaps-by-hexos/heatmap-list.png" alt="Dashboard"  />
+</p>
+<h3 id="request-heatmap">Request Heatmap<a hidden class="anchor" aria-hidden="true" href="#request-heatmap">#</a></h3>
+<p>On this page, the customer used pre-purchased credits to request a heatmap, by defining multiple settings:</p>
+<p>The size of the heatmap defined the maximum search radius - that is, how far the algorithm would search for possible routes.
+<img loading="lazy" src="/images/heatmaps-by-hexos/request-1.png" alt="Request page"  />
+</p>
+<p>The postcode represented the centre of the heatmap, either where all journeys started or finished. The map would update to place a pin at the postcode they had picked.
+<img loading="lazy" src="/images/heatmaps-by-hexos/request-2.png" alt="Request page"  />
+</p>
+<p>The journeys could either be calculated by using routes taken by car, or routes taken public transport.</p>
+<p>They then had to decide whether the heatmap was inbound or outbound. Inbound heatmaps would consider the latest time required to leave at a location to arrive at the centre by a given time. Outbound heatmaps would consider the earliest time you could arrive at a point, given you left the centre at a given time.
+<img loading="lazy" src="/images/heatmaps-by-hexos/request-3.png" alt="Request page"  />
+</p>
+<p>The arrival or departure time would need to be set dependant on if they had picked an inbound or outbound heatmap. The day of the week then had to be picked, so that the algorithm could look at relevant routes. For example traffic may be worse in the week, or public transport not as frequent on a weekend.
+<img loading="lazy" src="/images/heatmaps-by-hexos/request-4.png" alt="Request page"  />
+</p>
+<p>The user then had to submit their request - at which point the heatmap would begin processing on the AWS cloud system.
+<img loading="lazy" src="/images/heatmaps-by-hexos/request-5.png" alt="Request page"  />
+</p>
+<p>When the user requested a heatmap they would receive an email:
+<img loading="lazy" src="/images/heatmaps-by-hexos/request-received-email.png" alt="Email"  />
+</p>
+<p>And another email when the heatmap was ready.
+<img loading="lazy" src="/images/heatmaps-by-hexos/heatmap-ready-email.png" alt="Email"  />
+</p>
+<h3 id="interactive-heatmap-viewer">Interactive Heatmap Viewer<a hidden class="anchor" aria-hidden="true" href="#interactive-heatmap-viewer">#</a></h3>
+<p>The interactive heatmap viewer was very similar to the downloadable images, except it let you zoom in much further, click on any cell to get specific route information, and change the maximum time filter.</p>
+<p><img loading="lazy" src="/images/heatmaps-by-hexos/heatmap-viewer.png" alt="Heatmap viewer"  />
+
+<img loading="lazy" src="/images/heatmaps-by-hexos/heatmap-viewer-info.png" alt="Heatmap viewer"  />
+
+<img loading="lazy" src="/images/heatmaps-by-hexos/heatmap-viewer-settings.png" alt="Heatmap viewer"  />
+</p>
+<h3 id="account-settings">Account Settings<a hidden class="anchor" aria-hidden="true" href="#account-settings">#</a></h3>
+<p>There was also an account settings page where you could view all the information we stored, as well as change useful settings such as turning email updates off.</p>
+<p><img loading="lazy" src="/images/heatmaps-by-hexos/settings-1.png" alt="Settings"  />
+
+<img loading="lazy" src="/images/heatmaps-by-hexos/settings-2.png" alt="Settings"  />
+</p>
+<h3 id="purchase-credits">Purchase Credits<a hidden class="anchor" aria-hidden="true" href="#purchase-credits">#</a></h3>
+<p>Customers had to buy credits through the online dashboard that would then be credited to their account. They could then use these credits against eligible heatmap requests.</p>
+<p>For example a <code>city</code> heatmap would cost 2 credits.</p>
+<p>Payments were processed through <code>Stripe</code>.</p>
+<p><img loading="lazy" src="/images/heatmaps-by-hexos/purchase-credits.png" alt="Settings"  />
+</p>
+<h3 id="heatmap-download">Heatmap Download<a hidden class="anchor" aria-hidden="true" href="#heatmap-download">#</a></h3>
+<p>The user could then download a zip folder of images, in 4 definitions ranging from <code>512x512</code> to <code>3072x3072</code>. The images we then broken up into 5 maximum time filters, from 1 to 3 hours.</p>
+<p>We also supplied the user with a GeoJSON file with all the heatmap data, so they could make their own images.</p>
+<h2 id="what-has-happened-to-heatmaps-by-hexos-now">What Has Happened To &lsquo;Heatmaps By Hexos&rsquo; Now?<a hidden class="anchor" aria-hidden="true" href="#what-has-happened-to-heatmaps-by-hexos-now">#</a></h2>
+<p>Heatmaps by Hexos was a successful business that sold heatmap images to schools and colleges across the UK. They used these images to find new recruitment areas for students to come from that they hadn&rsquo;t previously considered.</p>
+<p>In 2022 I made the tough decision to shut this service down in order to focus on my professional development as a software engineer in industry. Other factors included the increasing time required to maintain the online service, especially with the speed at which frameworks such as Node.js are moving.</p>
+<p>I learnt invaluable lessons whilst building this product as well as building my network of connections, and I am sure that this is not the last we will see of Hexos!</p>
+<h2 id="other-resources--information">Other Resources &amp; Information<a hidden class="anchor" aria-hidden="true" href="#other-resources--information">#</a></h2>
+<p>These items are considered as archived - but give some extra details about specific parts of Heatmaps by Hexos, and therefore may be of interest. These items were mainly used as marketing material.</p>
+<h3 id="sheffield-digital-interview">Sheffield Digital Interview<a hidden class="anchor" aria-hidden="true" href="#sheffield-digital-interview">#</a></h3>
+<p><a href="http://www.youtube.com/watch?v=7uY_fDDKOMs" title="Digital Showcase: Dom Barter from Hexos"><img loading="lazy" src="http://img.youtube.com/vi/7uY_fDDKOMs/0.jpg" alt="Digital Showcase: Dom Barter from Hexos"  />
+</a></p>
+<h3 id="heatmap-handbook">Heatmap Handbook<a hidden class="anchor" aria-hidden="true" href="#heatmap-handbook">#</a></h3>
+<p><a href="/documents/the-heatmap-handbook.pdf">The Heatmap Handbook</a></p>
+<h3 id="service-overview">Service Overview<a hidden class="anchor" aria-hidden="true" href="#service-overview">#</a></h3>
+<p><a href="/documents/service-overview.pdf">Service Overview</a></p>
+<h3 id="example-heatmap-download">Example Heatmap Download<a hidden class="anchor" aria-hidden="true" href="#example-heatmap-download">#</a></h3>
+<p><a href="/documents/heatmap.zip">heatmap.zip</a></p>
+
+
+  </div>
+
+  <footer class="post-footer">
+  </footer>
+</article>
+    </main>
+    
+<footer class="footer">
+    <span>&copy; 2022 <a href="https://dombarter.co.uk/">Dom Barter</a></span>
+    <span>
+        Powered by
+        <a href="https://gohugo.io/" rel="noopener noreferrer" target="_blank">Hugo</a> &
+        <a href="https://git.io/hugopapermod" rel="noopener" target="_blank">PaperMod</a>
+    </span>
+</footer>
+<a href="#top" aria-label="go to top" title="Go to Top (Alt + G)" class="top-link" id="top-link" accesskey="g">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 6" fill="currentColor">
+        <path d="M12 6H0l6-6z" />
+    </svg>
+</a>
+
+<script>
+    let menu = document.getElementById('menu')
+    if (menu) {
+        menu.scrollLeft = localStorage.getItem("menu-scroll-position");
+        menu.onscroll = function () {
+            localStorage.setItem("menu-scroll-position", menu.scrollLeft);
+        }
+    }
+
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener("click", function (e) {
+            e.preventDefault();
+            var id = this.getAttribute("href").substr(1);
+            if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView({
+                    behavior: "smooth"
+                });
+            } else {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView();
+            }
+            if (id === "top") {
+                history.replaceState(null, null, " ");
+            } else {
+                history.pushState(null, null, `#${id}`);
+            }
+        });
+    });
+
+</script>
+<script>
+    var mybutton = document.getElementById("top-link");
+    window.onscroll = function () {
+        if (document.body.scrollTop > 800 || document.documentElement.scrollTop > 800) {
+            mybutton.style.visibility = "visible";
+            mybutton.style.opacity = "1";
+        } else {
+            mybutton.style.visibility = "hidden";
+            mybutton.style.opacity = "0";
+        }
+    };
+
+</script>
+<script>
+    document.getElementById("theme-toggle").addEventListener("click", () => {
+        if (document.body.className.includes("dark")) {
+            document.body.classList.remove('dark');
+            localStorage.setItem("pref-theme", 'light');
+        } else {
+            document.body.classList.add('dark');
+            localStorage.setItem("pref-theme", 'dark');
+        }
+    })
+
+</script>
+<script>
+    document.querySelectorAll('pre > code').forEach((codeblock) => {
+        const container = codeblock.parentNode.parentNode;
+
+        const copybutton = document.createElement('button');
+        copybutton.classList.add('copy-code');
+        copybutton.innerText = 'copy';
+
+        function copyingDone() {
+            copybutton.innerText = 'copied!';
+            setTimeout(() => {
+                copybutton.innerText = 'copy';
+            }, 2000);
+        }
+
+        copybutton.addEventListener('click', (cb) => {
+            if ('clipboard' in navigator) {
+                navigator.clipboard.writeText(codeblock.textContent);
+                copyingDone();
+                return;
+            }
+
+            const range = document.createRange();
+            range.selectNodeContents(codeblock);
+            const selection = window.getSelection();
+            selection.removeAllRanges();
+            selection.addRange(range);
+            try {
+                document.execCommand('copy');
+                copyingDone();
+            } catch (e) { };
+            selection.removeRange(range);
+        });
+
+        if (container.classList.contains("highlight")) {
+            container.appendChild(copybutton);
+        } else if (container.parentNode.firstChild == container) {
+            
+        } else if (codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.nodeName == "TABLE") {
+            
+            codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.appendChild(copybutton);
+        } else {
+            
+            codeblock.parentNode.appendChild(copybutton);
+        }
+    });
+</script>
+</body>
+
+</html>
