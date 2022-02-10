@@ -7,11 +7,12 @@ summary: "How to separate the concerns of environment configuration and applicat
 
 # The Motivation
 
-Currently when you make an Azure Functions project you have a `local.settings.json` file where you setup environment rules do do with the runtime frameworks, CORs settings etc - you can also configure 'application settings' that will be exposed as environment variables during runtime. 
+Currently when you make an Azure Functions project you have a `local.settings.json` file where you setup environment rules to do with the runtime frameworks, CORs settings etc - you can also configure 'application settings' that will be exposed as environment variables during runtime. 
 
-There are two things I would like to change about this:
+There are three things I would like to change about this:
 * I would like to separate the concerns by keeping environment configuration in one place, and my application/logic specific settings elsewhere.
 * It is not best practice to distribute sensitive settings by committing them into the repository - we need a different way of doing this. Currently you would have to commit the `local.settings.json` to distribute the sensitive values. 
+* Once `local.settings.json` contains no sensitive values I'd like to remove it from the `.gitignore` so that each member of the team will have the same local configuration. 
 
 # Setup
 
