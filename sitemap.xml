@@ -2,17 +2,20 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url>
+    <loc>https://dombarter.co.uk/posts/azure-functions-app-settings/</loc>
+    <lastmod>2022-02-10T08:09:35+00:00</lastmod>
+  </url><url>
     <loc>https://dombarter.co.uk/</loc>
-    <lastmod>2022-01-10T09:47:18+00:00</lastmod>
+    <lastmod>2022-02-10T08:09:35+00:00</lastmod>
+  </url><url>
+    <loc>https://dombarter.co.uk/posts/</loc>
+    <lastmod>2022-02-10T08:09:35+00:00</lastmod>
   </url><url>
     <loc>https://dombarter.co.uk/projects/hexos/</loc>
     <lastmod>2022-01-10T09:47:18+00:00</lastmod>
   </url><url>
     <loc>https://dombarter.co.uk/projects/</loc>
     <lastmod>2022-01-10T09:47:18+00:00</lastmod>
-  </url><url>
-    <loc>https://dombarter.co.uk/posts/</loc>
-    <lastmod>2022-01-09T16:22:18+00:00</lastmod>
   </url><url>
     <loc>https://dombarter.co.uk/posts/semantic-versioning/</loc>
     <lastmod>2022-01-09T16:22:18+00:00</lastmod>

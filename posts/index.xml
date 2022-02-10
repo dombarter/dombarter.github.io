@@ -6,7 +6,16 @@
     <description>Recent content in Posts on Dom Barter</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-gb</language>
-    <lastBuildDate>Sun, 09 Jan 2022 16:22:18 +0000</lastBuildDate><atom:link href="https://dombarter.co.uk/posts/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Thu, 10 Feb 2022 08:09:35 +0000</lastBuildDate><atom:link href="https://dombarter.co.uk/posts/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Adding app settings and user secrets to an Azure Functions project</title>
+      <link>https://dombarter.co.uk/posts/azure-functions-app-settings/</link>
+      <pubDate>Thu, 10 Feb 2022 08:09:35 +0000</pubDate>
+      
+      <guid>https://dombarter.co.uk/posts/azure-functions-app-settings/</guid>
+      <description>How to separate the concerns of environment configuration and application configuration in an azure functions project and distribute sensitive settings via user secrets and environment variables.</description>
+    </item>
+    
     <item>
       <title>Semantic Versioning</title>
       <link>https://dombarter.co.uk/posts/semantic-versioning/</link>

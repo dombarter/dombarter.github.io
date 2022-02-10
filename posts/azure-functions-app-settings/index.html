@@ -1,0 +1,552 @@
+<!DOCTYPE html>
+<html lang="en" dir="auto">
+
+<head><meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="robots" content="index, follow">
+<title>Adding app settings and user secrets to an Azure Functions project | Dom Barter</title>
+<meta name="keywords" content="" />
+<meta name="description" content="How to separate the concerns of environment configuration and application configuration in an azure functions project and distribute sensitive settings via user secrets and environment variables.">
+<meta name="author" content="Dom Barter">
+<link rel="canonical" href="https://dombarter.co.uk/posts/azure-functions-app-settings/" />
+<link crossorigin="anonymous" href="/assets/css/stylesheet.min.c88963fe2d79462000fd0fb1b3737783c32855d340583e4523343f8735c787f0.css" integrity="sha256-yIlj/i15RiAA/Q&#43;xs3N3g8MoVdNAWD5FIzQ/hzXHh/A=" rel="preload stylesheet" as="style">
+<script defer crossorigin="anonymous" src="/assets/js/highlight.min.7680afc38aa6b15ddf158a4f3780b7b1f7dde7e91d26f073e6229bb7a0793c92.js" integrity="sha256-doCvw4qmsV3fFYpPN4C3sffd5&#43;kdJvBz5iKbt6B5PJI="
+    onload="hljs.initHighlightingOnLoad();"></script>
+<link rel="icon" href="https://dombarter.co.uk/favicon.ico">
+<link rel="icon" type="image/png" sizes="16x16" href="https://dombarter.co.uk/favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="https://dombarter.co.uk/favicon-32x32.png">
+<link rel="apple-touch-icon" href="https://dombarter.co.uk/apple-touch-icon.png">
+<link rel="mask-icon" href="https://dombarter.co.uk/safari-pinned-tab.svg">
+<meta name="theme-color" content="#2e2e33">
+<meta name="msapplication-TileColor" content="#2e2e33">
+<meta name="generator" content="Hugo 0.83.0" />
+<noscript>
+    <style>
+        #theme-toggle,
+        .top-link {
+            display: none;
+        }
+
+    </style>
+    <style>
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --theme: rgb(29, 30, 32);
+                --entry: rgb(46, 46, 51);
+                --primary: rgb(218, 218, 219);
+                --secondary: rgb(155, 156, 157);
+                --tertiary: rgb(65, 66, 68);
+                --content: rgb(196, 196, 197);
+                --hljs-bg: rgb(46, 46, 51);
+                --code-bg: rgb(55, 56, 62);
+                --border: rgb(51, 51, 51);
+            }
+
+            .list {
+                background: var(--theme);
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-track {
+                background: 0 0;
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-thumb {
+                border-color: var(--theme);
+            }
+        }
+
+    </style>
+</noscript><meta property="og:title" content="Adding app settings and user secrets to an Azure Functions project" />
+<meta property="og:description" content="How to separate the concerns of environment configuration and application configuration in an azure functions project and distribute sensitive settings via user secrets and environment variables." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://dombarter.co.uk/posts/azure-functions-app-settings/" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2022-02-10T08:09:35&#43;00:00" />
+<meta property="article:modified_time" content="2022-02-10T08:09:35&#43;00:00" />
+
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Adding app settings and user secrets to an Azure Functions project"/>
+<meta name="twitter:description" content="How to separate the concerns of environment configuration and application configuration in an azure functions project and distribute sensitive settings via user secrets and environment variables."/>
+
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position":  1 ,
+      "name": "Posts",
+      "item": "https://dombarter.co.uk/posts/"
+    }, 
+    {
+      "@type": "ListItem",
+      "position":  2 ,
+      "name": "Adding app settings and user secrets to an Azure Functions project",
+      "item": "https://dombarter.co.uk/posts/azure-functions-app-settings/"
+    }
+  ]
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "Adding app settings and user secrets to an Azure Functions project",
+  "name": "Adding app settings and user secrets to an Azure Functions project",
+  "description": "How to separate the concerns of environment configuration and application configuration in an azure functions project and distribute sensitive settings via user secrets and environment variables.",
+  "keywords": [
+    
+  ],
+  "articleBody": "The Motivation Currently when you make an Azure Functions project you have a local.settings.json file where you setup environment rules do do with the runtime frameworks, CORs settings etc - you can also configure ‘application settings’ that will be exposed as environment variables during runtime.\nThere are two things I would like to change about this:\n I would like to separate the concerns by keeping environment configuration in one place, and my application/logic specific settings elsewhere. It is not best practice to distribute sensitive settings by committing them into the repository - we need a different way of doing this. Currently you would have to commit the local.settings.json to distribute the sensitive values.  Setup Enable User Secrets  User secrets are a tool built into .NET to allow developers to store secret information outside of the project root. It makes it less likely that secrets are accidentally committed to source control.\n Right click on the project in Visual Studio and select Manage User Secrets - this will add any required NuGet packages and alter the project file where necessary.\nOnce you have followed the required steps you should be able to click on Manage User Secrets again and an empty secrets.json file will open. This indicates that user secrets has been correctly setup.\nAdd appsettings.json file In the root of your project create an appsettings.json file and setup the insensitive values you want to store. Here is an example.\n// appsettings.json { \"ConnectionStrings\": { \"MyConnectionString\": \"\" // This value will be stored in user secrets - hence empty // (but we put it in here to remind us there is actually a value somewhere!) }, \"General\": { \"RandomColour\": \"blue\", \"Shape\": \"triangle\" } } You also need to make sure that the appsettings.json file is set to copy to your build output:\n Update=\"appsettings.json\" PreserveNewest  Add sensitive settings to User Secrets You can see above that we store insensitive values directly in appsettings.json, but we will merge together our user secrets and these values to create our final configuration that the application has access to.\nOpen your secrets.json file and put your sensitive settings inside. E.g:\n// secrets.json { \"ConnectionStrings\": { \"MyConnectionString\": \"my-sensitive-connection-string-1234-abcd\" }, // Note we didn't need the General section as this is taken from appsettings.json } Create options classes To access the settings during runtime we will use dependency injection of different Options classes, we need to make these classes.\nFor our examples above we will create two classes, one for each of the sections; ConnectionStrings and General:\nConfiguration/ ConnectionStrings.cs General.cs // ConnectionStrings.cs  namespace MyProject.Configuration { public class ConnectionStrings { public string RandomColour { get; set; } public string Shape { get; set; } } } // General.cs  namespace MyProject.Configuration { public class General { public string MyConnectionString { get; set; } } } Install required packages for Dependency Injection We need to install some NuGet packages to make sure that we will be able to inject our Options classes into our functions:\n Microsoft.Azure.Functions.Extensions Microsoft.NET.Sdk.Functions ( = 1.0.28 ) Microsoft.Extensions.DependencyInjections (  Create functions setup class to configure everything We will now create a startup class that will read values from our appsettings.json, our user secrets (and environment variables), merge them together into sections and then load into our preconfigured options objects. It will then finally register these options objects so our functions can request them via dependency injection.\nThe class should be called Startup.cs and be at the root of your project. Here is an example:\n// Startup.cs  using System; using System.IO; using MyProject.Configuration; using Microsoft.Azure.Functions.Extensions.DependencyInjection; using Microsoft.Extensions.Configuration; using Microsoft.Extensions.DependencyInjection; [assembly: FunctionsStartup(typeof(MyProject.Startup))] namespace MyProject { public class Startup : FunctionsStartup { private bool IsDevelopment = string.Equals(Environment.GetEnvironmentVariable(\"AZURE_FUNCTIONS_ENVIRONMENT\"), \"Development\", StringComparison.OrdinalIgnoreCase); ///   /// Loads in settings from various sources including environment / user secrets / appsettings  /// and binds them to various options objects  ///   public override void Configure(IFunctionsHostBuilder builder) { // Bind connection strings  builder.Services.AddOptions().Configure((settings, configuration) = { configuration.GetSection(nameof(ConnectionStrings)).Bind(settings); }); // Bind general settings  builder.Services.AddOptions().Configure((settings, configuration) = { configuration.GetSection(nameof(General)).Bind(settings); }); } ///   /// Defines the sources in which to load application settings from so they can be used above  ///   public override void ConfigureAppConfiguration(IFunctionsConfigurationBuilder builder) { FunctionsHostBuilderContext context = builder.GetContext(); builder.ConfigurationBuilder .AddJsonFile(Path.Combine(context.ApplicationRootPath, \"appsettings.json\"), optional: true); if (IsDevelopment) { builder.ConfigurationBuilder.AddUserSecrets(); } else { builder.ConfigurationBuilder.AddEnvironmentVariables(); } } } } Accessing the settings during runtime You now need to request the options objects via dependency injection in your function. Here is an example:\n// MyFunction.cs  ... private readonly IOptions _connectionStrings; private readonly IOptions _settings; public MyFunction(IOptions connectionStrings, IOptions settings) { _connectionStrings = connectionStrings; _settings = settings; } ... // Access a setting var shape = _settings.Value.Shape Testing the application If you now run the functions project locally you should find values stored in either user secrets or directly in appsettings.json are accessible at runtime! 🎉🎉\nDeployment User secrets are not supported when deployed, hence you need to move your sensitive values to environment variables when deployed. The values hardcoded into appsettings.json will still be read. You may have noticed this in Startup.cs that we merge from different locations depending on the environment.\nThere is just once small factor you need to be made aware of. You have have to flatten your JSON when naming your environment variables. For example the following setting in our user secrets:\n{ \"ConnectionStrings\": { \"MyConnectionString\": \"my-sensitive-connection-string-1234-abcd\" } } becomes the following environment variable (using double underscore__ to indicate nesting):\nConnectionStrings__MyConnectionString = \"my-sensitive-connection-string-1234-abcd\" Documentation When a new member of your team comes to work on your project they will not have their user secrets setup correctly so their project will not run as expected.\nWe suggest adding a section to your README that indicates what the layout of their secrets.json should be, and where they could get the value from.\n// Please setup your secrets.json as follows, // the connection string can be found in the company password vault. { \"ConnectionStrings\": { \"MyConnectionString\": \"\" } } References  https://docs.microsoft.com/en-us/azure/azure-functions/functions-dotnet-dependency-injection https://docs.microsoft.com/en-us/aspnet/core/security/app-secrets?view=aspnetcore-6.0\u0026tabs=windows  ",
+  "wordCount" : "987",
+  "inLanguage": "en",
+  "datePublished": "2022-02-10T08:09:35Z",
+  "dateModified": "2022-02-10T08:09:35Z",
+  "author":{
+    "@type": "Person",
+    "name": "Dom Barter"
+  },
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "https://dombarter.co.uk/posts/azure-functions-app-settings/"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "Dom Barter",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https://dombarter.co.uk/favicon.ico"
+    }
+  }
+}
+</script>
+</head>
+
+<body class="" id="top">
+<script>
+    if (localStorage.getItem("pref-theme") === "dark") {
+        document.body.classList.add('dark');
+    } else if (localStorage.getItem("pref-theme") === "light") {
+        document.body.classList.remove('dark')
+    } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        document.body.classList.add('dark');
+    }
+
+</script>
+
+<header class="header">
+    <nav class="nav">
+        <div class="logo">
+            <a href="https://dombarter.co.uk/" accesskey="h" title="Dom Barter (Alt + H)">Dom Barter</a>
+            <span class="logo-switches">
+                <button id="theme-toggle" accesskey="t" title="(Alt + T)">
+                    <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                    </svg>
+                    <svg id="sun" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="5"></circle>
+                        <line x1="12" y1="1" x2="12" y2="3"></line>
+                        <line x1="12" y1="21" x2="12" y2="23"></line>
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                        <line x1="1" y1="12" x2="3" y2="12"></line>
+                        <line x1="21" y1="12" x2="23" y2="12"></line>
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                    </svg>
+                </button>
+            </span>
+        </div>
+        <ul id="menu">
+            <li>
+                <a href="https://dombarter.co.uk/about/" title="About">
+                    <span>About</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://dombarter.co.uk/posts/" title="Posts">
+                    <span>Posts</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://dombarter.co.uk/projects/" title="Projects">
+                    <span>Projects</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://dombarter.co.uk/search/" title="Search (Alt &#43; /)" accesskey=/>
+                    <span>Search</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+</header>
+<main class="main">
+
+<article class="post-single">
+  <header class="post-header">
+    <div class="breadcrumbs"><a href="https://dombarter.co.uk/">Home</a>&nbsp;»&nbsp;<a href="https://dombarter.co.uk/posts/">Posts</a></div>
+    <h1 class="post-title">
+      Adding app settings and user secrets to an Azure Functions project
+    </h1>
+    <div class="post-meta"><span title='2022-02-10 08:09:35 +0000 UTC'>February 10, 2022</span>&nbsp;·&nbsp;5 min&nbsp;·&nbsp;Dom Barter
+
+</div>
+  </header> <div class="toc">
+    <details >
+        <summary accesskey="c" title="(Alt + C)">
+            <span class="details">Table of Contents</span>
+        </summary>
+
+        <div class="inner"><ul>
+                <li>
+                    <a href="#the-motivation" aria-label="The Motivation">The Motivation</a></li>
+                <li>
+                    <a href="#setup" aria-label="Setup">Setup</a><ul>
+                        
+                <li>
+                    <a href="#enable-user-secrets" aria-label="Enable User Secrets">Enable User Secrets</a></li>
+                <li>
+                    <a href="#add-appsettingsjson-file" aria-label="Add appsettings.json file">Add <code>appsettings.json</code> file</a></li>
+                <li>
+                    <a href="#add-sensitive-settings-to-user-secrets" aria-label="Add sensitive settings to User Secrets">Add sensitive settings to User Secrets</a></li>
+                <li>
+                    <a href="#create-options-classes" aria-label="Create options classes">Create options classes</a></li>
+                <li>
+                    <a href="#install-required-packages-for-dependency-injection" aria-label="Install required packages for Dependency Injection">Install required packages for Dependency Injection</a></li>
+                <li>
+                    <a href="#create-functions-setup-class-to-configure-everything" aria-label="Create functions setup class to configure everything">Create functions setup class to configure everything</a></li>
+                <li>
+                    <a href="#accessing-the-settings-during-runtime" aria-label="Accessing the settings during runtime">Accessing the settings during runtime</a></li>
+                <li>
+                    <a href="#testing-the-application" aria-label="Testing the application">Testing the application</a></li></ul>
+                </li>
+                <li>
+                    <a href="#deployment" aria-label="Deployment">Deployment</a></li>
+                <li>
+                    <a href="#documentation" aria-label="Documentation">Documentation</a></li>
+                <li>
+                    <a href="#references" aria-label="References">References</a>
+                </li>
+            </ul>
+        </div>
+    </details>
+</div>
+
+  <div class="post-content"><h1 id="the-motivation">The Motivation<a hidden class="anchor" aria-hidden="true" href="#the-motivation">#</a></h1>
+<p>Currently when you make an Azure Functions project you have a <code>local.settings.json</code> file where you setup environment rules do do with the runtime frameworks, CORs settings etc - you can also configure &lsquo;application settings&rsquo; that will be exposed as environment variables during runtime.</p>
+<p>There are two things I would like to change about this:</p>
+<ul>
+<li>I would like to separate the concerns by keeping environment configuration in one place, and my application/logic specific settings elsewhere.</li>
+<li>It is not best practice to distribute sensitive settings by committing them into the repository - we need a different way of doing this. Currently you would have to commit the <code>local.settings.json</code> to distribute the sensitive values.</li>
+</ul>
+<h1 id="setup">Setup<a hidden class="anchor" aria-hidden="true" href="#setup">#</a></h1>
+<h2 id="enable-user-secrets">Enable User Secrets<a hidden class="anchor" aria-hidden="true" href="#enable-user-secrets">#</a></h2>
+<blockquote>
+<p>User secrets are a tool built into .NET to allow developers to store secret information outside of the project root. It makes it less likely that secrets are accidentally committed to source control.</p>
+</blockquote>
+<p>Right click on the project in Visual Studio and select <code>Manage User Secrets</code> - this will add any required NuGet packages and alter the project file where necessary.</p>
+<p>Once you have followed the required steps you should be able to click on <code>Manage User Secrets</code> again and an empty <code>secrets.json</code> file will open. This indicates that user secrets has been correctly setup.</p>
+<h2 id="add-appsettingsjson-file">Add <code>appsettings.json</code> file<a hidden class="anchor" aria-hidden="true" href="#add-appsettingsjson-file">#</a></h2>
+<p>In the root of your project create an <code>appsettings.json</code> file and setup the insensitive values you want to store. Here is an example.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-json" data-lang="json"><span style="color:#960050;background-color:#1e0010">//</span> <span style="color:#960050;background-color:#1e0010">appsettings.json</span>
+
+{
+  <span style="color:#f92672">&#34;ConnectionStrings&#34;</span>: {
+    <span style="color:#f92672">&#34;MyConnectionString&#34;</span>: <span style="color:#e6db74">&#34;&#34;</span> <span style="color:#960050;background-color:#1e0010">//</span> <span style="color:#960050;background-color:#1e0010">This</span> <span style="color:#960050;background-color:#1e0010">value</span> <span style="color:#960050;background-color:#1e0010">will</span> <span style="color:#960050;background-color:#1e0010">be</span> <span style="color:#960050;background-color:#1e0010">stored</span> <span style="color:#960050;background-color:#1e0010">in</span> <span style="color:#960050;background-color:#1e0010">user</span> <span style="color:#960050;background-color:#1e0010">secrets</span> <span style="color:#960050;background-color:#1e0010">-</span> <span style="color:#960050;background-color:#1e0010">hence</span> <span style="color:#960050;background-color:#1e0010">empty</span>
+    <span style="color:#960050;background-color:#1e0010">//</span> <span style="color:#960050;background-color:#1e0010">(but</span> <span style="color:#960050;background-color:#1e0010">we</span> <span style="color:#960050;background-color:#1e0010">put</span> <span style="color:#960050;background-color:#1e0010">it</span> <span style="color:#960050;background-color:#1e0010">in</span> <span style="color:#960050;background-color:#1e0010">here</span> <span style="color:#960050;background-color:#1e0010">to</span> <span style="color:#960050;background-color:#1e0010">remind</span> <span style="color:#960050;background-color:#1e0010">us</span> <span style="color:#960050;background-color:#1e0010">there</span> <span style="color:#960050;background-color:#1e0010">is</span> <span style="color:#960050;background-color:#1e0010">actually</span> <span style="color:#960050;background-color:#1e0010">a</span> <span style="color:#960050;background-color:#1e0010">value</span> <span style="color:#960050;background-color:#1e0010">somewhere!)</span>
+  },
+  <span style="color:#f92672">&#34;General&#34;</span>: {
+    <span style="color:#f92672">&#34;RandomColour&#34;</span>: <span style="color:#e6db74">&#34;blue&#34;</span>,
+    <span style="color:#f92672">&#34;Shape&#34;</span>: <span style="color:#e6db74">&#34;triangle&#34;</span>
+  }
+}
+</code></pre></div><p>You also need to make sure that the <code>appsettings.json</code> file is set to copy to your build output:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-xml" data-lang="xml"><span style="color:#f92672">&lt;None</span> <span style="color:#a6e22e">Update=</span><span style="color:#e6db74">&#34;appsettings.json&#34;</span><span style="color:#f92672">&gt;</span>
+  <span style="color:#f92672">&lt;CopyToOutputDirectory&gt;</span>PreserveNewest<span style="color:#f92672">&lt;/CopyToOutputDirectory&gt;</span>
+<span style="color:#f92672">&lt;/None&gt;</span>
+</code></pre></div><h2 id="add-sensitive-settings-to-user-secrets">Add sensitive settings to User Secrets<a hidden class="anchor" aria-hidden="true" href="#add-sensitive-settings-to-user-secrets">#</a></h2>
+<p>You can see above that we store insensitive values directly in <code>appsettings.json</code>, but we will merge together our user secrets and these values to create our final configuration that the application has access to.</p>
+<p>Open your <code>secrets.json</code> file and put your sensitive settings inside. E.g:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-json" data-lang="json"><span style="color:#960050;background-color:#1e0010">//</span> <span style="color:#960050;background-color:#1e0010">secrets.json</span>
+
+{
+  <span style="color:#f92672">&#34;ConnectionStrings&#34;</span>: {
+    <span style="color:#f92672">&#34;MyConnectionString&#34;</span>: <span style="color:#e6db74">&#34;my-sensitive-connection-string-1234-abcd&#34;</span> 
+  },
+  <span style="color:#960050;background-color:#1e0010">//</span> <span style="color:#960050;background-color:#1e0010">Note</span> <span style="color:#960050;background-color:#1e0010">we</span> <span style="color:#960050;background-color:#1e0010">didn&#39;t</span> <span style="color:#960050;background-color:#1e0010">need</span> <span style="color:#960050;background-color:#1e0010">the</span> <span style="color:#960050;background-color:#1e0010">General</span> <span style="color:#960050;background-color:#1e0010">section</span> <span style="color:#960050;background-color:#1e0010">as</span> <span style="color:#960050;background-color:#1e0010">this</span> <span style="color:#960050;background-color:#1e0010">is</span> <span style="color:#960050;background-color:#1e0010">taken</span> <span style="color:#960050;background-color:#1e0010">from</span> <span style="color:#960050;background-color:#1e0010">appsettings.json</span>
+}
+</code></pre></div><h2 id="create-options-classes">Create options classes<a hidden class="anchor" aria-hidden="true" href="#create-options-classes">#</a></h2>
+<p>To access the settings during runtime we will use dependency injection of different <code>Options</code> classes, we need to make these classes.</p>
+<p>For our examples above we will create two classes, one for each of the sections; <code>ConnectionStrings</code> and <code>General</code>:</p>
+<pre><code>Configuration/
+    ConnectionStrings.cs
+    General.cs
+</code></pre><div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#75715e">// ConnectionStrings.cs
+</span><span style="color:#75715e"></span>
+<span style="color:#66d9ef">namespace</span> MyProject.Configuration 
+{
+  <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">ConnectionStrings</span> 
+  {
+    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">string</span> RandomColour { <span style="color:#66d9ef">get</span>; <span style="color:#66d9ef">set</span>; }
+    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">string</span> Shape { <span style="color:#66d9ef">get</span>; <span style="color:#66d9ef">set</span>; }
+  }
+}
+</code></pre></div><div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#75715e">// General.cs
+</span><span style="color:#75715e"></span>
+<span style="color:#66d9ef">namespace</span> MyProject.Configuration 
+{
+  <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">General</span> 
+  {
+    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">string</span> MyConnectionString { <span style="color:#66d9ef">get</span>; <span style="color:#66d9ef">set</span>; }
+  }
+}
+</code></pre></div><h2 id="install-required-packages-for-dependency-injection">Install required packages for Dependency Injection<a hidden class="anchor" aria-hidden="true" href="#install-required-packages-for-dependency-injection">#</a></h2>
+<p>We need to install some NuGet packages to make sure that we will be able to inject our <code>Options</code> classes into our functions:</p>
+<ul>
+<li>Microsoft.Azure.Functions.Extensions</li>
+<li>Microsoft.NET.Sdk.Functions ( &gt;= 1.0.28 )</li>
+<li>Microsoft.Extensions.DependencyInjections ( &lt;= 3.x )</li>
+</ul>
+<h2 id="create-functions-setup-class-to-configure-everything">Create functions setup class to configure everything<a hidden class="anchor" aria-hidden="true" href="#create-functions-setup-class-to-configure-everything">#</a></h2>
+<p>We will now create a startup class that will read values from our <code>appsettings.json</code>, our user secrets (and environment variables), merge them together into sections and then load into our preconfigured options objects. It will then finally register these options objects so our functions can request them via dependency injection.</p>
+<p>The class should be called <code>Startup.cs</code> and be at the root of your project. Here is an example:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#75715e">// Startup.cs
+</span><span style="color:#75715e"></span>
+<span style="color:#66d9ef">using</span> System;
+<span style="color:#66d9ef">using</span> System.IO;
+<span style="color:#66d9ef">using</span> MyProject.Configuration;
+<span style="color:#66d9ef">using</span> Microsoft.Azure.Functions.Extensions.DependencyInjection;
+<span style="color:#66d9ef">using</span> Microsoft.Extensions.Configuration;
+<span style="color:#66d9ef">using</span> Microsoft.Extensions.DependencyInjection;
+<span style="color:#a6e22e">
+</span><span style="color:#a6e22e">[assembly: FunctionsStartup(typeof(MyProject.Startup))]</span>
+
+<span style="color:#66d9ef">namespace</span> MyProject
+{
+    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Startup</span> : FunctionsStartup
+    {
+        <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">bool</span> IsDevelopment =&gt;
+            <span style="color:#66d9ef">string</span>.Equals(Environment.GetEnvironmentVariable(<span style="color:#e6db74">&#34;AZURE_FUNCTIONS_ENVIRONMENT&#34;</span>), <span style="color:#e6db74">&#34;Development&#34;</span>, StringComparison.OrdinalIgnoreCase);
+
+        <span style="color:#75715e">/// &lt;summary&gt;
+</span><span style="color:#75715e"></span>        <span style="color:#75715e">/// Loads in settings from various sources including environment / user secrets / appsettings
+</span><span style="color:#75715e"></span>        <span style="color:#75715e">///     and binds them to various options objects
+</span><span style="color:#75715e"></span>        <span style="color:#75715e">/// &lt;/summary&gt;
+</span><span style="color:#75715e"></span>        <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">override</span> <span style="color:#66d9ef">void</span> Configure(IFunctionsHostBuilder builder)
+        {
+            <span style="color:#75715e">// Bind connection strings
+</span><span style="color:#75715e"></span>            builder.Services.AddOptions&lt;ConnectionStrings&gt;().Configure&lt;IConfiguration&gt;((settings, configuration) =&gt;
+            {
+                configuration.GetSection(nameof(ConnectionStrings)).Bind(settings);
+            });
+
+            <span style="color:#75715e">// Bind general settings
+</span><span style="color:#75715e"></span>            builder.Services.AddOptions&lt;General&gt;().Configure&lt;IConfiguration&gt;((settings, configuration) =&gt;
+            {
+                configuration.GetSection(nameof(General)).Bind(settings);
+            });
+        }
+
+        <span style="color:#75715e">/// &lt;summary&gt;
+</span><span style="color:#75715e"></span>        <span style="color:#75715e">/// Defines the sources in which to load application settings from so they can be used above
+</span><span style="color:#75715e"></span>        <span style="color:#75715e">/// &lt;/summary&gt;
+</span><span style="color:#75715e"></span>        <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">override</span> <span style="color:#66d9ef">void</span> ConfigureAppConfiguration(IFunctionsConfigurationBuilder builder)
+        {
+            FunctionsHostBuilderContext context = builder.GetContext();
+
+            builder.ConfigurationBuilder
+                .AddJsonFile(Path.Combine(context.ApplicationRootPath, <span style="color:#e6db74">&#34;appsettings.json&#34;</span>), optional: <span style="color:#66d9ef">true</span>);
+
+            <span style="color:#66d9ef">if</span> (IsDevelopment)
+            {
+                builder.ConfigurationBuilder.AddUserSecrets&lt;Startup&gt;();
+            } 
+            <span style="color:#66d9ef">else</span>
+            {
+                builder.ConfigurationBuilder.AddEnvironmentVariables();
+            }
+        }
+    }
+}
+
+</code></pre></div><h2 id="accessing-the-settings-during-runtime">Accessing the settings during runtime<a hidden class="anchor" aria-hidden="true" href="#accessing-the-settings-during-runtime">#</a></h2>
+<p>You now need to request the options objects via dependency injection in your function. Here is an example:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#75715e">// MyFunction.cs
+</span><span style="color:#75715e"></span>
+...
+
+<span style="color:#66d9ef">private</span> <span style="color:#66d9ef">readonly</span> IOptions&lt;ConnectionStrings&gt; <span style="color:#ae81ff">_</span>connectionStrings;
+<span style="color:#66d9ef">private</span> <span style="color:#66d9ef">readonly</span> IOptions&lt;General&gt; <span style="color:#ae81ff">_</span>settings;
+
+<span style="color:#66d9ef">public</span> MyFunction(IOptions&lt;ConnectionStrings&gt; connectionStrings, IOptions&lt;General&gt; settings)
+{
+    <span style="color:#ae81ff">_</span>connectionStrings = connectionStrings;
+    <span style="color:#ae81ff">_</span>settings = settings;
+}
+
+...
+
+<span style="color:#75715e">// Access a setting
+</span><span style="color:#75715e"></span><span style="color:#66d9ef">var</span> shape = <span style="color:#ae81ff">_</span>settings.Value.Shape
+</code></pre></div><h2 id="testing-the-application">Testing the application<a hidden class="anchor" aria-hidden="true" href="#testing-the-application">#</a></h2>
+<p>If you now run the functions project locally you should find values stored in either user secrets or directly in <code>appsettings.json</code> are accessible at runtime! 🎉🎉</p>
+<h1 id="deployment">Deployment<a hidden class="anchor" aria-hidden="true" href="#deployment">#</a></h1>
+<p>User secrets are not supported when deployed, hence you need to move your sensitive values to environment variables when deployed. The values hardcoded into <code>appsettings.json</code> will still be read. You may have noticed this in <code>Startup.cs</code> that we merge from different locations depending on the environment.</p>
+<p>There is just once small factor you need to be made aware of. You have have to flatten your JSON when naming your environment variables. For example the following setting in our user secrets:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-json" data-lang="json">{
+  <span style="color:#f92672">&#34;ConnectionStrings&#34;</span>: {
+    <span style="color:#f92672">&#34;MyConnectionString&#34;</span>: <span style="color:#e6db74">&#34;my-sensitive-connection-string-1234-abcd&#34;</span> 
+  }
+}
+</code></pre></div><p>becomes the following environment variable (using double underscore<code>__</code> to indicate nesting):</p>
+<pre><code>ConnectionStrings__MyConnectionString = &quot;my-sensitive-connection-string-1234-abcd&quot;
+</code></pre><h1 id="documentation">Documentation<a hidden class="anchor" aria-hidden="true" href="#documentation">#</a></h1>
+<p>When a new member of your team comes to work on your project they will not have their user secrets setup correctly so their project will not run as expected.</p>
+<p>We suggest adding a section to your README that indicates what the layout of their <code>secrets.json</code> should be, and where they could get the value from.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-json" data-lang="json"><span style="color:#960050;background-color:#1e0010">//</span> <span style="color:#960050;background-color:#1e0010">Please</span> <span style="color:#960050;background-color:#1e0010">setup</span> <span style="color:#960050;background-color:#1e0010">your</span> <span style="color:#960050;background-color:#1e0010">secrets.json</span> <span style="color:#960050;background-color:#1e0010">as</span> <span style="color:#960050;background-color:#1e0010">follows,</span> 
+<span style="color:#960050;background-color:#1e0010">//</span> <span style="color:#960050;background-color:#1e0010">the</span> <span style="color:#960050;background-color:#1e0010">connection</span> <span style="color:#960050;background-color:#1e0010">string</span> <span style="color:#960050;background-color:#1e0010">can</span> <span style="color:#960050;background-color:#1e0010">be</span> <span style="color:#960050;background-color:#1e0010">found</span> <span style="color:#960050;background-color:#1e0010">in</span> <span style="color:#960050;background-color:#1e0010">the</span> <span style="color:#960050;background-color:#1e0010">company</span> <span style="color:#960050;background-color:#1e0010">password</span> <span style="color:#960050;background-color:#1e0010">vault.</span> 
+
+{
+  <span style="color:#f92672">&#34;ConnectionStrings&#34;</span>: {
+    <span style="color:#f92672">&#34;MyConnectionString&#34;</span>: <span style="color:#e6db74">&#34;&lt;IN_PASSWORD_VAULT&gt;&#34;</span> 
+  }
+}
+</code></pre></div><h1 id="references">References<a hidden class="anchor" aria-hidden="true" href="#references">#</a></h1>
+<ul>
+<li><a href="https://docs.microsoft.com/en-us/azure/azure-functions/functions-dotnet-dependency-injection">https://docs.microsoft.com/en-us/azure/azure-functions/functions-dotnet-dependency-injection</a></li>
+<li><a href="https://docs.microsoft.com/en-us/aspnet/core/security/app-secrets?view=aspnetcore-6.0&amp;tabs=windows">https://docs.microsoft.com/en-us/aspnet/core/security/app-secrets?view=aspnetcore-6.0&amp;tabs=windows</a></li>
+</ul>
+
+
+  </div>
+
+  <footer class="post-footer">
+  </footer>
+</article>
+    </main>
+    
+<footer class="footer">
+    <span>&copy; 2022 <a href="https://dombarter.co.uk/">Dom Barter</a></span>
+    <span>
+        Powered by
+        <a href="https://gohugo.io/" rel="noopener noreferrer" target="_blank">Hugo</a> &
+        <a href="https://git.io/hugopapermod" rel="noopener" target="_blank">PaperMod</a>
+    </span>
+</footer>
+<a href="#top" aria-label="go to top" title="Go to Top (Alt + G)" class="top-link" id="top-link" accesskey="g">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 6" fill="currentColor">
+        <path d="M12 6H0l6-6z" />
+    </svg>
+</a>
+
+<script>
+    let menu = document.getElementById('menu')
+    if (menu) {
+        menu.scrollLeft = localStorage.getItem("menu-scroll-position");
+        menu.onscroll = function () {
+            localStorage.setItem("menu-scroll-position", menu.scrollLeft);
+        }
+    }
+
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener("click", function (e) {
+            e.preventDefault();
+            var id = this.getAttribute("href").substr(1);
+            if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView({
+                    behavior: "smooth"
+                });
+            } else {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView();
+            }
+            if (id === "top") {
+                history.replaceState(null, null, " ");
+            } else {
+                history.pushState(null, null, `#${id}`);
+            }
+        });
+    });
+
+</script>
+<script>
+    var mybutton = document.getElementById("top-link");
+    window.onscroll = function () {
+        if (document.body.scrollTop > 800 || document.documentElement.scrollTop > 800) {
+            mybutton.style.visibility = "visible";
+            mybutton.style.opacity = "1";
+        } else {
+            mybutton.style.visibility = "hidden";
+            mybutton.style.opacity = "0";
+        }
+    };
+
+</script>
+<script>
+    document.getElementById("theme-toggle").addEventListener("click", () => {
+        if (document.body.className.includes("dark")) {
+            document.body.classList.remove('dark');
+            localStorage.setItem("pref-theme", 'light');
+        } else {
+            document.body.classList.add('dark');
+            localStorage.setItem("pref-theme", 'dark');
+        }
+    })
+
+</script>
+<script>
+    document.querySelectorAll('pre > code').forEach((codeblock) => {
+        const container = codeblock.parentNode.parentNode;
+
+        const copybutton = document.createElement('button');
+        copybutton.classList.add('copy-code');
+        copybutton.innerText = 'copy';
+
+        function copyingDone() {
+            copybutton.innerText = 'copied!';
+            setTimeout(() => {
+                copybutton.innerText = 'copy';
+            }, 2000);
+        }
+
+        copybutton.addEventListener('click', (cb) => {
+            if ('clipboard' in navigator) {
+                navigator.clipboard.writeText(codeblock.textContent);
+                copyingDone();
+                return;
+            }
+
+            const range = document.createRange();
+            range.selectNodeContents(codeblock);
+            const selection = window.getSelection();
+            selection.removeAllRanges();
+            selection.addRange(range);
+            try {
+                document.execCommand('copy');
+                copyingDone();
+            } catch (e) { };
+            selection.removeRange(range);
+        });
+
+        if (container.classList.contains("highlight")) {
+            container.appendChild(copybutton);
+        } else if (container.parentNode.firstChild == container) {
+            
+        } else if (codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.nodeName == "TABLE") {
+            
+            codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.appendChild(copybutton);
+        } else {
+            
+            codeblock.parentNode.appendChild(copybutton);
+        }
+    });
+</script>
+</body>
+
+</html>
