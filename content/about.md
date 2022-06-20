@@ -54,7 +54,10 @@ Throughout my time at 3squared I worked on a number of different projects includ
 > The simple way to make your factory smart.
 > We make it easy for staff across your business to access live and accurate information about your manufacturing processes, wherever they are. [elementstechnology.co.uk/](https://www.elementstechnology.co.uk/)
 
-### Languages & Frameworks Used
+### Tech Stack
+### Projects
+
+---
 
 # Education 
 
