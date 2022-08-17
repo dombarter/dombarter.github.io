@@ -6,7 +6,16 @@
     <description>Recent content on Dom Barter</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-gb</language>
-    <lastBuildDate>Wed, 17 Aug 2022 09:28:40 +0100</lastBuildDate><atom:link href="https://dombarter.co.uk/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Wed, 17 Aug 2022 13:13:12 +0100</lastBuildDate><atom:link href="https://dombarter.co.uk/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>(Part 4) Amend JWTs to work securely with SPAs in a .NET 6 Web API</title>
+      <link>https://dombarter.co.uk/posts/add-dotnet-jwts-for-spas-to-web-api/</link>
+      <pubDate>Wed, 17 Aug 2022 13:13:12 +0100</pubDate>
+      
+      <guid>https://dombarter.co.uk/posts/add-dotnet-jwts-for-spas-to-web-api/</guid>
+      <description>Change how we handle JWTs so that they can be securely used by SPAs rather than the standard API lifecycle</description>
+    </item>
+    
     <item>
       <title>(Part 3) Add JWT based authentication and authorization to a .NET 6 Web API</title>
       <link>https://dombarter.co.uk/posts/add-dotnet-jwts-to-web-api/</link>

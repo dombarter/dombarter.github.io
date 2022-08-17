@@ -1,0 +1,479 @@
+<!DOCTYPE html>
+<html lang="en" dir="auto">
+
+<head><meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="robots" content="index, follow">
+<title>(Part 4) Amend JWTs to work securely with SPAs in a .NET 6 Web API | Dom Barter</title>
+<meta name="keywords" content="">
+<meta name="description" content="Change how we handle JWTs so that they can be securely used by SPAs rather than the standard API lifecycle">
+<meta name="author" content="Dom Barter">
+<link rel="canonical" href="https://dombarter.co.uk/posts/add-dotnet-jwts-for-spas-to-web-api/">
+<link crossorigin="anonymous" href="/assets/css/stylesheet.bc1149f4a72aa4858d3a9f71462f75e5884ffe8073ea9d6d5761d5663d651e20.css" integrity="sha256-vBFJ9KcqpIWNOp9xRi915YhP/oBz6p1tV2HVZj1lHiA=" rel="preload stylesheet" as="style">
+<script defer crossorigin="anonymous" src="/assets/js/highlight.f413e19d0714851f6474e7ee9632408e58ac146fbdbe62747134bea2fa3415e0.js" integrity="sha256-9BPhnQcUhR9kdOfuljJAjlisFG&#43;9vmJ0cTS&#43;ovo0FeA="
+    onload="hljs.initHighlightingOnLoad();"></script>
+<link rel="icon" href="https://dombarter.co.uk/favicon.ico">
+<link rel="icon" type="image/png" sizes="16x16" href="https://dombarter.co.uk/favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="https://dombarter.co.uk/favicon-32x32.png">
+<link rel="apple-touch-icon" href="https://dombarter.co.uk/apple-touch-icon.png">
+<link rel="mask-icon" href="https://dombarter.co.uk/safari-pinned-tab.svg">
+<meta name="theme-color" content="#2e2e33">
+<meta name="msapplication-TileColor" content="#2e2e33">
+<noscript>
+    <style>
+        #theme-toggle,
+        .top-link {
+            display: none;
+        }
+
+    </style>
+    <style>
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --theme: rgb(29, 30, 32);
+                --entry: rgb(46, 46, 51);
+                --primary: rgb(218, 218, 219);
+                --secondary: rgb(155, 156, 157);
+                --tertiary: rgb(65, 66, 68);
+                --content: rgb(196, 196, 197);
+                --hljs-bg: rgb(46, 46, 51);
+                --code-bg: rgb(55, 56, 62);
+                --border: rgb(51, 51, 51);
+            }
+
+            .list {
+                background: var(--theme);
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-track {
+                background: 0 0;
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-thumb {
+                border-color: var(--theme);
+            }
+        }
+
+    </style>
+</noscript><meta property="og:title" content="(Part 4) Amend JWTs to work securely with SPAs in a .NET 6 Web API" />
+<meta property="og:description" content="Change how we handle JWTs so that they can be securely used by SPAs rather than the standard API lifecycle" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://dombarter.co.uk/posts/add-dotnet-jwts-for-spas-to-web-api/" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2022-08-17T13:13:12&#43;01:00" />
+<meta property="article:modified_time" content="2022-08-17T13:13:12&#43;01:00" />
+
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="(Part 4) Amend JWTs to work securely with SPAs in a .NET 6 Web API"/>
+<meta name="twitter:description" content="Change how we handle JWTs so that they can be securely used by SPAs rather than the standard API lifecycle"/>
+
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position":  1 ,
+      "name": "Posts",
+      "item": "https://dombarter.co.uk/posts/"
+    }, 
+    {
+      "@type": "ListItem",
+      "position":  2 ,
+      "name": "(Part 4) Amend JWTs to work securely with SPAs in a .NET 6 Web API",
+      "item": "https://dombarter.co.uk/posts/add-dotnet-jwts-for-spas-to-web-api/"
+    }
+  ]
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "(Part 4) Amend JWTs to work securely with SPAs in a .NET 6 Web API",
+  "name": "(Part 4) Amend JWTs to work securely with SPAs in a .NET 6 Web API",
+  "description": "Change how we handle JWTs so that they can be securely used by SPAs rather than the standard API lifecycle",
+  "keywords": [
+    
+  ],
+  "articleBody": "GitHub Repository All the code in this series can be found at https://github.com/dombarter/Solar.API\nMotivation In my previous post, we setup a full .NET 6 Web API with user and role management with .NET Identity, and then we’ve authorised and authenticated those users using JWTs.\nHowever, there are security risks surrounding returning the JWT as plain text and letting the client handle the storage of it. This is because the most likely place it would be stored is in localStorage which is highly susceptible to XSS (cross-site scripting). If you were consuming this application using Postman or a mobile application this wouldn’t be a problem. But for an SPA (single page application) it is.\nInstead, we are going to change the way the JWT is returned, so that it is returned as an expirable, http only cookie; which cannot be accessed by javascript and will be automatically included on every request.\nCookie Name We first of all need to define a name for our access token cookie so we’re always reading and writing to the same one. This needs to be added in appsettings.json under the Jwt section:\n{ \"Jwt\": { \"Key\": \"ThisIsMySecretKey\", \"Issuer\": \"https://localhost:7234/\", \"Audience\": \"https://localhost:7234/\", \"CookieName\": \"solar-access-token\" //  add this line } } Alter The Authentication Mechanism Now we need to go to the startup class, Program.cs and add an extra option to the AddJwtBearer method which will pull the token from a cookie rather than from its default location in the Authorization header:\noptions.Events = new JwtBearerEvents { OnMessageReceived = context = { context.Token = context.Request.Cookies[builder.Configuration[\"Jwt:CookieName\"]]; return Task.CompletedTask; }, }; Generate The Cookie On Login We’re now reading the JWT from the cookie, but we need to generate the cookie and send it to the client as well. Amend your login action so it appends a cookie to the response and only returns account information in the body (no access tokens!):\nResponse.Cookies.Append(_config[\"Jwt:CookieName\"], token, new CookieOptions { HttpOnly = true, IsEssential = true, MaxAge = TimeSpan.FromMinutes(30), SameSite = SameSiteMode.None, Secure = true, }); return new OkObjectResult( new LoginResultDto(user.Email, await _userManager.GetRolesAsync(user)) ); Clear The Cookie On Logout Because the client cannot access the cookie at all, the only way we can clear it is by calling a logout action, that will return an empty cookie with an instant expiry:\n[HttpPost] [Route(\"logout\")] [AllowAnonymous] public IActionResult Logout() { Response.Cookies.Append(_config[\"Jwt:CookieName\"], string.Empty, new CookieOptions { HttpOnly = true, IsEssential = true, MaxAge = TimeSpan.Zero, SameSite = SameSiteMode.None, Secure = true, }); return Ok(); } Update The Swagger Configuration Now that we no longer need to manually include the JWT with each request, we can remove the Swagger configuration that gave us that Authorization button at the top right:\nbuilder.Services.AddEndpointsApiExplorer(); builder.Services.AddSwaggerGen(options = { var jwtSecurityScheme = new OpenApiSecurityScheme { Name = \"Authorization\", Type = SecuritySchemeType.Http, Scheme = JwtBearerDefaults.AuthenticationScheme, BearerFormat = \"JWT\", In = ParameterLocation.Header, Reference = new OpenApiReference { Type = ReferenceType.SecurityScheme, Id = JwtBearerDefaults.AuthenticationScheme } }; options.AddSecurityDefinition(JwtBearerDefaults.AuthenticationScheme, jwtSecurityScheme); options.AddSecurityRequirement(new OpenApiSecurityRequirement(){{ jwtSecurityScheme, new string[] {} }}); }); becomes\nbuilder.Services.AddEndpointsApiExplorer(); builder.Services.AddSwaggerGen(); Testing You should now be able to open the Swagger page for your API, make a login request and then make a call to a protected endpoint and you will get a successful response. If you look in the dev tools you should notice the solar-access-token has been set. Try removing it and see what happens!\nConnecting To A Vue.js SPA Cookies work when using a system such as Swagger, but when using them in Vue.js we need a bit more configuration. This is because it is another web site, so CORs comes into play.\nFirst of all we need to add a default CORs policy to our API. Make sure to define specific origins rather than allowing all. This is applied in Program.cs:\nbuilder.Services.AddCors(options = options.AddDefaultPolicy( policy = policy .WithOrigins(\"http://localhost:8080\") .AllowCredentials() .AllowAnyHeader() .AllowAnyMethod() )); ... app.UseCors(); And then finally, if you are using a http client such as axios - make sure to set withCredentials to true to make sure those cookies are always sent and received:\nconst axiosInstance = axios.create({ withCredentials: true, }); Conclusion And that’s it, we now have a way of securely managing users, roles and access to our API when calling from a JavaScript SPA.\nReferences  https://javascript.plainenglish.io/how-to-secure-jwt-in-a-single-page-application-6a46e69fc393 https://spin.atomicobject.com/2020/07/25/net-core-jwt-cookie-authentication/ https://dotnetcoretutorials.com/2017/01/15/httponly-cookies-asp-net-core/ https://docs.microsoft.com/en-us/dotnet/api/microsoft.aspnetcore.http.cookieoptions?view=aspnetcore-6.0#properties https://blog.logrocket.com/jwt-authentication-best-practices/ https://stackoverflow.com/questions/71419379/set-cookie-not-working-properly-in-axios-call  ",
+  "wordCount" : "703",
+  "inLanguage": "en",
+  "datePublished": "2022-08-17T13:13:12+01:00",
+  "dateModified": "2022-08-17T13:13:12+01:00",
+  "author":{
+    "@type": "Person",
+    "name": "Dom Barter"
+  },
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "https://dombarter.co.uk/posts/add-dotnet-jwts-for-spas-to-web-api/"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "Dom Barter",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https://dombarter.co.uk/favicon.ico"
+    }
+  }
+}
+</script>
+</head>
+
+<body class="" id="top">
+<script>
+    if (localStorage.getItem("pref-theme") === "dark") {
+        document.body.classList.add('dark');
+    } else if (localStorage.getItem("pref-theme") === "light") {
+        document.body.classList.remove('dark')
+    } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        document.body.classList.add('dark');
+    }
+
+</script>
+
+<header class="header">
+    <nav class="nav">
+        <div class="logo">
+            <a href="https://dombarter.co.uk/" accesskey="h" title="Dom Barter (Alt + H)">Dom Barter</a>
+            <div class="logo-switches">
+                <button id="theme-toggle" accesskey="t" title="(Alt + T)">
+                    <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                    </svg>
+                    <svg id="sun" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="5"></circle>
+                        <line x1="12" y1="1" x2="12" y2="3"></line>
+                        <line x1="12" y1="21" x2="12" y2="23"></line>
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                        <line x1="1" y1="12" x2="3" y2="12"></line>
+                        <line x1="21" y1="12" x2="23" y2="12"></line>
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                    </svg>
+                </button>
+            </div>
+        </div>
+        <ul id="menu">
+            <li>
+                <a href="https://dombarter.co.uk/about/" title="About">
+                    <span>About</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://dombarter.co.uk/posts/" title="Posts">
+                    <span>Posts</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://dombarter.co.uk/projects/" title="Projects">
+                    <span>Projects</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://dombarter.co.uk/search/" title="Search (Alt &#43; /)" accesskey=/>
+                    <span>Search</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+</header>
+<main class="main">
+
+<article class="post-single">
+  <header class="post-header">
+    <div class="breadcrumbs"><a href="https://dombarter.co.uk/">Home</a>&nbsp;»&nbsp;<a href="https://dombarter.co.uk/posts/">Posts</a></div>
+    <h1 class="post-title">
+      (Part 4) Amend JWTs to work securely with SPAs in a .NET 6 Web API
+    </h1>
+    <div class="post-meta"><span title='2022-08-17 13:13:12 +0100 +0100'>August 17, 2022</span>&nbsp;·&nbsp;4 min&nbsp;·&nbsp;Dom Barter
+
+</div>
+  </header> <div class="toc">
+    <details >
+        <summary accesskey="c" title="(Alt + C)">
+            <span class="details">Table of Contents</span>
+        </summary>
+
+        <div class="inner"><ul><ul><ul>
+                <li>
+                    <a href="#github-repository" aria-label="GitHub Repository">GitHub Repository</a></li></ul>
+                    </ul>
+                    
+                <li>
+                    <a href="#motivation" aria-label="Motivation">Motivation</a></li>
+                <li>
+                    <a href="#cookie-name" aria-label="Cookie Name">Cookie Name</a></li>
+                <li>
+                    <a href="#alter-the-authentication-mechanism" aria-label="Alter The Authentication Mechanism">Alter The Authentication Mechanism</a></li>
+                <li>
+                    <a href="#generate-the-cookie-on-login" aria-label="Generate The Cookie On Login">Generate The Cookie On Login</a></li>
+                <li>
+                    <a href="#clear-the-cookie-on-logout" aria-label="Clear The Cookie On Logout">Clear The Cookie On Logout</a></li>
+                <li>
+                    <a href="#update-the-swagger-configuration" aria-label="Update The Swagger Configuration">Update The Swagger Configuration</a></li>
+                <li>
+                    <a href="#testing" aria-label="Testing">Testing</a></li>
+                <li>
+                    <a href="#connecting-to-a-vuejs-spa" aria-label="Connecting To A Vue.js SPA">Connecting To A Vue.js SPA</a></li>
+                <li>
+                    <a href="#conclusion" aria-label="Conclusion">Conclusion</a></li>
+                <li>
+                    <a href="#references" aria-label="References">References</a>
+                </li>
+            </ul>
+        </div>
+    </details>
+</div>
+
+  <div class="post-content"><h3 id="github-repository">GitHub Repository<a hidden class="anchor" aria-hidden="true" href="#github-repository">#</a></h3>
+<p>All the code in this series can be found at <a href="https://github.com/dombarter/Solar.API">https://github.com/dombarter/Solar.API</a></p>
+<h1 id="motivation">Motivation<a hidden class="anchor" aria-hidden="true" href="#motivation">#</a></h1>
+<p>In my <a href="/posts/add-dotnet-jwts-to-web-api">previous post</a>, we setup a full .NET 6 Web API with user and role management with .NET Identity, and then we&rsquo;ve authorised and authenticated those users using JWTs.</p>
+<p>However, there are security risks surrounding returning the JWT as plain text and letting the client handle the storage of it. This is because the most likely place it would be stored is in <code>localStorage</code> which is highly susceptible to XSS (cross-site scripting). If you were consuming this application using Postman or a mobile application this wouldn&rsquo;t be a problem. But for an SPA (single page application) it is.</p>
+<p>Instead, we are going to change the way the JWT is returned, so that it is returned as an expirable, http only cookie; which cannot be accessed by javascript and will be automatically included on every request.</p>
+<h1 id="cookie-name">Cookie Name<a hidden class="anchor" aria-hidden="true" href="#cookie-name">#</a></h1>
+<p>We first of all need to define a name for our access token cookie so we&rsquo;re always reading and writing to the same one. This needs to be added in <code>appsettings.json</code> under the <code>Jwt</code> section:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-json" data-lang="json">{
+  <span style="color:#f92672">&#34;Jwt&#34;</span>: {
+    <span style="color:#f92672">&#34;Key&#34;</span>: <span style="color:#e6db74">&#34;ThisIsMySecretKey&#34;</span>,
+    <span style="color:#f92672">&#34;Issuer&#34;</span>: <span style="color:#e6db74">&#34;https://localhost:7234/&#34;</span>,
+    <span style="color:#f92672">&#34;Audience&#34;</span>: <span style="color:#e6db74">&#34;https://localhost:7234/&#34;</span>,
+    <span style="color:#f92672">&#34;CookieName&#34;</span>: <span style="color:#e6db74">&#34;solar-access-token&#34;</span> <span style="color:#960050;background-color:#1e0010">//</span> <span style="color:#960050;background-color:#1e0010">&lt;-</span> <span style="color:#960050;background-color:#1e0010">add</span> <span style="color:#960050;background-color:#1e0010">this</span> <span style="color:#960050;background-color:#1e0010">line</span>
+  }
+}
+</code></pre></div><h1 id="alter-the-authentication-mechanism">Alter The Authentication Mechanism<a hidden class="anchor" aria-hidden="true" href="#alter-the-authentication-mechanism">#</a></h1>
+<p>Now we need to go to the startup class, <code>Program.cs</code> and add an extra option to the <code>AddJwtBearer</code> method which will pull the token from a cookie rather than from its default location in the <code>Authorization</code> header:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp">options.Events = <span style="color:#66d9ef">new</span> JwtBearerEvents
+{
+    OnMessageReceived = context =&gt;
+    {
+        context.Token = context.Request.Cookies[builder.Configuration[<span style="color:#e6db74">&#34;Jwt:CookieName&#34;</span>]];
+        <span style="color:#66d9ef">return</span> Task.CompletedTask;
+    },
+};
+</code></pre></div><h1 id="generate-the-cookie-on-login">Generate The Cookie On Login<a hidden class="anchor" aria-hidden="true" href="#generate-the-cookie-on-login">#</a></h1>
+<p>We&rsquo;re now reading the JWT from the cookie, but we need to generate the cookie and send it to the client as well. Amend your login action so it appends a cookie to the response and only returns account information in the body (no access tokens!):</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp">Response.Cookies.Append(<span style="color:#ae81ff">_</span>config[<span style="color:#e6db74">&#34;Jwt:CookieName&#34;</span>], token, <span style="color:#66d9ef">new</span> CookieOptions
+{
+    HttpOnly = <span style="color:#66d9ef">true</span>,
+    IsEssential = <span style="color:#66d9ef">true</span>,
+    MaxAge = TimeSpan.FromMinutes(<span style="color:#ae81ff">30</span>),
+    SameSite = SameSiteMode.None,
+    Secure = <span style="color:#66d9ef">true</span>,
+});
+
+<span style="color:#66d9ef">return</span> <span style="color:#66d9ef">new</span> OkObjectResult(
+    <span style="color:#66d9ef">new</span> LoginResultDto(user.Email, <span style="color:#66d9ef">await</span> <span style="color:#ae81ff">_</span>userManager.GetRolesAsync(user))
+);
+</code></pre></div><h1 id="clear-the-cookie-on-logout">Clear The Cookie On Logout<a hidden class="anchor" aria-hidden="true" href="#clear-the-cookie-on-logout">#</a></h1>
+<p>Because the client cannot access the cookie at all, the only way we can clear it is by calling a logout action, that will return an empty cookie with an instant expiry:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#a6e22e">[HttpPost]</span>
+<span style="color:#a6e22e">[Route(&#34;logout&#34;)]</span>
+<span style="color:#a6e22e">[AllowAnonymous]</span>
+<span style="color:#66d9ef">public</span> IActionResult Logout()
+{
+    Response.Cookies.Append(<span style="color:#ae81ff">_</span>config[<span style="color:#e6db74">&#34;Jwt:CookieName&#34;</span>], <span style="color:#66d9ef">string</span>.Empty, <span style="color:#66d9ef">new</span> CookieOptions
+    {
+        HttpOnly = <span style="color:#66d9ef">true</span>,
+        IsEssential = <span style="color:#66d9ef">true</span>,
+        MaxAge = TimeSpan.Zero,
+        SameSite = SameSiteMode.None,
+        Secure = <span style="color:#66d9ef">true</span>,
+    });
+
+    <span style="color:#66d9ef">return</span> Ok();
+}
+</code></pre></div><h1 id="update-the-swagger-configuration">Update The Swagger Configuration<a hidden class="anchor" aria-hidden="true" href="#update-the-swagger-configuration">#</a></h1>
+<p>Now that we no longer need to manually include the JWT with each request, we can remove the Swagger configuration that gave us that <code>Authorization</code> button at the top right:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp">builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen(options =&gt;
+{
+    <span style="color:#66d9ef">var</span> jwtSecurityScheme = <span style="color:#66d9ef">new</span> OpenApiSecurityScheme
+    {
+        Name = <span style="color:#e6db74">&#34;Authorization&#34;</span>,
+        Type = SecuritySchemeType.Http,
+        Scheme = JwtBearerDefaults.AuthenticationScheme,
+        BearerFormat = <span style="color:#e6db74">&#34;JWT&#34;</span>,
+        In = ParameterLocation.Header,
+        Reference = <span style="color:#66d9ef">new</span> OpenApiReference
+        {
+            Type = ReferenceType.SecurityScheme,
+            Id = JwtBearerDefaults.AuthenticationScheme
+        }
+    };
+
+    options.AddSecurityDefinition(JwtBearerDefaults.AuthenticationScheme, jwtSecurityScheme);
+    options.AddSecurityRequirement(<span style="color:#66d9ef">new</span> OpenApiSecurityRequirement(){{ jwtSecurityScheme, <span style="color:#66d9ef">new</span> <span style="color:#66d9ef">string</span>[] {} }});
+});
+</code></pre></div><p>becomes</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp">builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen();
+</code></pre></div><h1 id="testing">Testing<a hidden class="anchor" aria-hidden="true" href="#testing">#</a></h1>
+<p>You should now be able to open the Swagger page for your API, make a login request and then make a call to a protected endpoint and you will get a successful response. If you look in the dev tools you should notice the <code>solar-access-token</code> has been set. Try removing it and see what happens!</p>
+<h1 id="connecting-to-a-vuejs-spa">Connecting To A Vue.js SPA<a hidden class="anchor" aria-hidden="true" href="#connecting-to-a-vuejs-spa">#</a></h1>
+<p>Cookies work when using a system such as Swagger, but when using them in Vue.js we need a bit more configuration. This is because it is another web site, so CORs comes into play.</p>
+<p>First of all we need to add a default CORs policy to our API. Make sure to define specific origins rather than allowing all. This is applied in <code>Program.cs</code>:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp">builder.Services.AddCors(options =&gt; options.AddDefaultPolicy(
+    policy =&gt; policy
+        .WithOrigins(<span style="color:#e6db74">&#34;http://localhost:8080&#34;</span>)
+        .AllowCredentials()
+        .AllowAnyHeader()
+        .AllowAnyMethod()
+));
+
+...
+
+app.UseCors();
+</code></pre></div><p>And then finally, if you are using a http client such as <code>axios</code> - make sure to set <code>withCredentials</code> to <code>true</code> to make sure those cookies are always sent and received:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-ts" data-lang="ts"><span style="color:#66d9ef">const</span> <span style="color:#a6e22e">axiosInstance</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">axios</span>.<span style="color:#a6e22e">create</span>({
+  <span style="color:#a6e22e">withCredentials</span>: <span style="color:#66d9ef">true</span>,
+});
+</code></pre></div><h1 id="conclusion">Conclusion<a hidden class="anchor" aria-hidden="true" href="#conclusion">#</a></h1>
+<p>And that&rsquo;s it, we now have a way of securely managing users, roles and access to our API when calling from a JavaScript SPA.</p>
+<h1 id="references">References<a hidden class="anchor" aria-hidden="true" href="#references">#</a></h1>
+<ul>
+<li><a href="https://javascript.plainenglish.io/how-to-secure-jwt-in-a-single-page-application-6a46e69fc393">https://javascript.plainenglish.io/how-to-secure-jwt-in-a-single-page-application-6a46e69fc393</a></li>
+<li><a href="https://spin.atomicobject.com/2020/07/25/net-core-jwt-cookie-authentication/">https://spin.atomicobject.com/2020/07/25/net-core-jwt-cookie-authentication/</a></li>
+<li><a href="https://dotnetcoretutorials.com/2017/01/15/httponly-cookies-asp-net-core/">https://dotnetcoretutorials.com/2017/01/15/httponly-cookies-asp-net-core/</a></li>
+<li><a href="https://docs.microsoft.com/en-us/dotnet/api/microsoft.aspnetcore.http.cookieoptions?view=aspnetcore-6.0#properties">https://docs.microsoft.com/en-us/dotnet/api/microsoft.aspnetcore.http.cookieoptions?view=aspnetcore-6.0#properties</a></li>
+<li><a href="https://blog.logrocket.com/jwt-authentication-best-practices/">https://blog.logrocket.com/jwt-authentication-best-practices/</a></li>
+<li><a href="https://stackoverflow.com/questions/71419379/set-cookie-not-working-properly-in-axios-call">https://stackoverflow.com/questions/71419379/set-cookie-not-working-properly-in-axios-call</a></li>
+</ul>
+
+
+  </div>
+
+  <footer class="post-footer">
+    <ul class="post-tags">
+    </ul>
+  </footer>
+</article>
+    </main>
+    
+<footer class="footer">
+    <span>&copy; 2022 <a href="https://dombarter.co.uk/">Dom Barter</a></span>
+    <span>
+        Powered by
+        <a href="https://gohugo.io/" rel="noopener noreferrer" target="_blank">Hugo</a> &
+        <a href="https://github.com/adityatelange/hugo-PaperMod/" rel="noopener" target="_blank">PaperMod</a>
+    </span>
+</footer>
+<a href="#top" aria-label="go to top" title="Go to Top (Alt + G)" class="top-link" id="top-link" accesskey="g">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 6" fill="currentColor">
+        <path d="M12 6H0l6-6z" />
+    </svg>
+</a>
+
+<script>
+    let menu = document.getElementById('menu')
+    if (menu) {
+        menu.scrollLeft = localStorage.getItem("menu-scroll-position");
+        menu.onscroll = function () {
+            localStorage.setItem("menu-scroll-position", menu.scrollLeft);
+        }
+    }
+
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener("click", function (e) {
+            e.preventDefault();
+            var id = this.getAttribute("href").substr(1);
+            if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView({
+                    behavior: "smooth"
+                });
+            } else {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView();
+            }
+            if (id === "top") {
+                history.replaceState(null, null, " ");
+            } else {
+                history.pushState(null, null, `#${id}`);
+            }
+        });
+    });
+
+</script>
+<script>
+    var mybutton = document.getElementById("top-link");
+    window.onscroll = function () {
+        if (document.body.scrollTop > 800 || document.documentElement.scrollTop > 800) {
+            mybutton.style.visibility = "visible";
+            mybutton.style.opacity = "1";
+        } else {
+            mybutton.style.visibility = "hidden";
+            mybutton.style.opacity = "0";
+        }
+    };
+
+</script>
+<script>
+    document.getElementById("theme-toggle").addEventListener("click", () => {
+        if (document.body.className.includes("dark")) {
+            document.body.classList.remove('dark');
+            localStorage.setItem("pref-theme", 'light');
+        } else {
+            document.body.classList.add('dark');
+            localStorage.setItem("pref-theme", 'dark');
+        }
+    })
+
+</script>
+<script>
+    document.querySelectorAll('pre > code').forEach((codeblock) => {
+        const container = codeblock.parentNode.parentNode;
+
+        const copybutton = document.createElement('button');
+        copybutton.classList.add('copy-code');
+        copybutton.innerHTML = 'copy';
+
+        function copyingDone() {
+            copybutton.innerHTML = 'copied!';
+            setTimeout(() => {
+                copybutton.innerHTML = 'copy';
+            }, 2000);
+        }
+
+        copybutton.addEventListener('click', (cb) => {
+            if ('clipboard' in navigator) {
+                navigator.clipboard.writeText(codeblock.textContent);
+                copyingDone();
+                return;
+            }
+
+            const range = document.createRange();
+            range.selectNodeContents(codeblock);
+            const selection = window.getSelection();
+            selection.removeAllRanges();
+            selection.addRange(range);
+            try {
+                document.execCommand('copy');
+                copyingDone();
+            } catch (e) { };
+            selection.removeRange(range);
+        });
+
+        if (container.classList.contains("highlight")) {
+            container.appendChild(copybutton);
+        } else if (container.parentNode.firstChild == container) {
+            
+        } else if (codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.nodeName == "TABLE") {
+            
+            codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.appendChild(copybutton);
+        } else {
+            
+            codeblock.parentNode.appendChild(copybutton);
+        }
+    });
+</script>
+</body>
+
+</html>

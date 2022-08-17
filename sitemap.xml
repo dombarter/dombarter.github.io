@@ -2,13 +2,16 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url>
-    <loc>https://dombarter.co.uk/posts/add-dotnet-jwts-to-web-api/</loc>
-    <lastmod>2022-08-17T09:28:40+01:00</lastmod>
+    <loc>https://dombarter.co.uk/posts/add-dotnet-jwts-for-spas-to-web-api/</loc>
+    <lastmod>2022-08-17T13:13:12+01:00</lastmod>
   </url><url>
     <loc>https://dombarter.co.uk/</loc>
-    <lastmod>2022-08-17T09:28:40+01:00</lastmod>
+    <lastmod>2022-08-17T13:13:12+01:00</lastmod>
   </url><url>
     <loc>https://dombarter.co.uk/posts/</loc>
+    <lastmod>2022-08-17T13:13:12+01:00</lastmod>
+  </url><url>
+    <loc>https://dombarter.co.uk/posts/add-dotnet-jwts-to-web-api/</loc>
     <lastmod>2022-08-17T09:28:40+01:00</lastmod>
   </url><url>
     <loc>https://dombarter.co.uk/posts/add-dotnet-identity-roles-to-web-api/</loc>
