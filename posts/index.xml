@@ -6,7 +6,16 @@
     <description>Recent content in Posts on Dom Barter</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-gb</language>
-    <lastBuildDate>Wed, 17 Aug 2022 13:13:12 +0100</lastBuildDate><atom:link href="https://dombarter.co.uk/posts/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Wed, 17 Aug 2022 14:53:28 +0100</lastBuildDate><atom:link href="https://dombarter.co.uk/posts/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Generate a .NET 6 Web API Typescript client from an OpenAPI / Swagger definition</title>
+      <link>https://dombarter.co.uk/posts/generate-typescript-client-from-swagger/</link>
+      <pubDate>Wed, 17 Aug 2022 14:53:28 +0100</pubDate>
+      
+      <guid>https://dombarter.co.uk/posts/generate-typescript-client-from-swagger/</guid>
+      <description>Turn your swagger.json file into a fully configured typescript API service, that you can instantly integrate into your JavaScript application</description>
+    </item>
+    
     <item>
       <title>(Part 4) Amend JWTs to work securely with SPAs in a .NET 6 Web API</title>
       <link>https://dombarter.co.uk/posts/add-dotnet-jwts-for-spas-to-web-api/</link>

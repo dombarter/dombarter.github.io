@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+<html lang="en" dir="auto">
+
+<head><meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="robots" content="index, follow">
+<title>Generate a .NET 6 Web API Typescript client from an OpenAPI / Swagger definition | Dom Barter</title>
+<meta name="keywords" content="">
+<meta name="description" content="Turn your swagger.json file into a fully configured typescript API service, that you can instantly integrate into your JavaScript application">
+<meta name="author" content="Dom Barter">
+<link rel="canonical" href="https://dombarter.co.uk/posts/generate-typescript-client-from-swagger/">
+<link crossorigin="anonymous" href="/assets/css/stylesheet.bc1149f4a72aa4858d3a9f71462f75e5884ffe8073ea9d6d5761d5663d651e20.css" integrity="sha256-vBFJ9KcqpIWNOp9xRi915YhP/oBz6p1tV2HVZj1lHiA=" rel="preload stylesheet" as="style">
+<script defer crossorigin="anonymous" src="/assets/js/highlight.f413e19d0714851f6474e7ee9632408e58ac146fbdbe62747134bea2fa3415e0.js" integrity="sha256-9BPhnQcUhR9kdOfuljJAjlisFG&#43;9vmJ0cTS&#43;ovo0FeA="
+    onload="hljs.initHighlightingOnLoad();"></script>
+<link rel="icon" href="https://dombarter.co.uk/favicon.ico">
+<link rel="icon" type="image/png" sizes="16x16" href="https://dombarter.co.uk/favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="https://dombarter.co.uk/favicon-32x32.png">
+<link rel="apple-touch-icon" href="https://dombarter.co.uk/apple-touch-icon.png">
+<link rel="mask-icon" href="https://dombarter.co.uk/safari-pinned-tab.svg">
+<meta name="theme-color" content="#2e2e33">
+<meta name="msapplication-TileColor" content="#2e2e33">
+<noscript>
+    <style>
+        #theme-toggle,
+        .top-link {
+            display: none;
+        }
+
+    </style>
+    <style>
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --theme: rgb(29, 30, 32);
+                --entry: rgb(46, 46, 51);
+                --primary: rgb(218, 218, 219);
+                --secondary: rgb(155, 156, 157);
+                --tertiary: rgb(65, 66, 68);
+                --content: rgb(196, 196, 197);
+                --hljs-bg: rgb(46, 46, 51);
+                --code-bg: rgb(55, 56, 62);
+                --border: rgb(51, 51, 51);
+            }
+
+            .list {
+                background: var(--theme);
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-track {
+                background: 0 0;
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-thumb {
+                border-color: var(--theme);
+            }
+        }
+
+    </style>
+</noscript><meta property="og:title" content="Generate a .NET 6 Web API Typescript client from an OpenAPI / Swagger definition" />
+<meta property="og:description" content="Turn your swagger.json file into a fully configured typescript API service, that you can instantly integrate into your JavaScript application" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://dombarter.co.uk/posts/generate-typescript-client-from-swagger/" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2022-08-17T14:53:28&#43;01:00" />
+<meta property="article:modified_time" content="2022-08-17T14:53:28&#43;01:00" />
+
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Generate a .NET 6 Web API Typescript client from an OpenAPI / Swagger definition"/>
+<meta name="twitter:description" content="Turn your swagger.json file into a fully configured typescript API service, that you can instantly integrate into your JavaScript application"/>
+
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position":  1 ,
+      "name": "Posts",
+      "item": "https://dombarter.co.uk/posts/"
+    }, 
+    {
+      "@type": "ListItem",
+      "position":  2 ,
+      "name": "Generate a .NET 6 Web API Typescript client from an OpenAPI / Swagger definition",
+      "item": "https://dombarter.co.uk/posts/generate-typescript-client-from-swagger/"
+    }
+  ]
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "Generate a .NET 6 Web API Typescript client from an OpenAPI / Swagger definition",
+  "name": "Generate a .NET 6 Web API Typescript client from an OpenAPI \/ Swagger definition",
+  "description": "Turn your swagger.json file into a fully configured typescript API service, that you can instantly integrate into your JavaScript application",
+  "keywords": [
+    
+  ],
+  "articleBody": "GitHub Repository An example of this code can be found at https://github.com/dombarter/Solar.API\nMotivation Ever wondered if there was an easy way of turning your C# DTOs into TypeScript interfaces? Every wondered if we could automatically generate a TypeScript client for our API, rather than having to manually write out the function for every endpoint? Turns out the answer is yes, here’s how:\nGenerate The Swagger Definition If you’ve recently created a .NET Web API you’ll know it automatically opens up Swagger when you run the application. However it doesn’t create a swagger.json file that is copied to your project folder.\nLet’s get a swagger.json being generated:\nInstall Swashbuckle CLI Run the following commands in your API project:\ndotnet new tool-manifest dotnet tool install Swashbuckle.AspNetCore.Cli Add A New Post-Build Command Add the following task to your API csproj which will generate a swagger.json file from our API build, and then copy that file into our Vue.js directory, so we can access it using npm commands.\n Name=\"OpenAPI\" AfterTargets=\"Build\"  Command=\"dotnet tool restore\" WorkingDirectory=\"$(ProjectDir)\" /  Command=\"dotnet swagger tofile --output ../Solar.Vue/references/swagger.json $(OutputPath)$(AssemblyName).dll v1\" WorkingDirectory=\"$(ProjectDir)\" /  If you now build the project, you should find a swagger.json file under Solar.Vue/references/.\nGenerate The TypeScript Client Now we have our hands on a swagger.json we now need to build a TypeScript client. There are a couple of steps:\nInstall OpenAPI Tools Install the following npm package:\nnpm i @openapitools/openapi-generator-cli -D OpenAPI Tools is the officially supported package for everything OpenAPI/Swagger (see https://openapi.tools/)\nInstall Java The above generator requires Java to be installed. If you’re on windows you can easily install it using chocolatey:\nchoco install oraclejdk NPM Script And finally, we need to add a npm script to build the client:\n\"generate-api-client\": \"openapi-generator-cli generate -i ./references/swagger.json -g typescript-axios -o ./src/api/\"  ./references/swagger.json defines where the definition is ./src/api defines where the client should be created typescript-axios is a type of client (specifically written in TypeScript and using axios for http calls)  Testing You will now have a fully fledged TypeScript client with DTO types. Here is an example of how you can use it!\nimport { AccountApi } from \"@/api\"; const api = new AccountApi(); const result = await api.userLoginPost({ email: \"user@email.com\", password: \"password\", }); References  https://www.npmjs.com/package/@openapitools/openapi-generator-cli https://khalidabuhakmeh.com/generate-aspnet-core-openapi-spec-at-build-time https://chrlschn.medium.com/net-6-web-apis-with-openapi-typescript-client-generation-a743e7f8e4f5 https://stackoverflow.com/questions/33283071/swagger-webapi-create-json-on-build  ",
+  "wordCount" : "375",
+  "inLanguage": "en",
+  "datePublished": "2022-08-17T14:53:28+01:00",
+  "dateModified": "2022-08-17T14:53:28+01:00",
+  "author":{
+    "@type": "Person",
+    "name": "Dom Barter"
+  },
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "https://dombarter.co.uk/posts/generate-typescript-client-from-swagger/"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "Dom Barter",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https://dombarter.co.uk/favicon.ico"
+    }
+  }
+}
+</script>
+</head>
+
+<body class="" id="top">
+<script>
+    if (localStorage.getItem("pref-theme") === "dark") {
+        document.body.classList.add('dark');
+    } else if (localStorage.getItem("pref-theme") === "light") {
+        document.body.classList.remove('dark')
+    } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        document.body.classList.add('dark');
+    }
+
+</script>
+
+<header class="header">
+    <nav class="nav">
+        <div class="logo">
+            <a href="https://dombarter.co.uk/" accesskey="h" title="Dom Barter (Alt + H)">Dom Barter</a>
+            <div class="logo-switches">
+                <button id="theme-toggle" accesskey="t" title="(Alt + T)">
+                    <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                    </svg>
+                    <svg id="sun" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="5"></circle>
+                        <line x1="12" y1="1" x2="12" y2="3"></line>
+                        <line x1="12" y1="21" x2="12" y2="23"></line>
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                        <line x1="1" y1="12" x2="3" y2="12"></line>
+                        <line x1="21" y1="12" x2="23" y2="12"></line>
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                    </svg>
+                </button>
+            </div>
+        </div>
+        <ul id="menu">
+            <li>
+                <a href="https://dombarter.co.uk/posts/" title="Posts">
+                    <span>Posts</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://dombarter.co.uk/projects/" title="Projects">
+                    <span>Projects</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://dombarter.co.uk/search/" title="Search (Alt &#43; /)" accesskey=/>
+                    <span>Search</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+</header>
+<main class="main">
+
+<article class="post-single">
+  <header class="post-header">
+    <div class="breadcrumbs"><a href="https://dombarter.co.uk/">Home</a>&nbsp;»&nbsp;<a href="https://dombarter.co.uk/posts/">Posts</a></div>
+    <h1 class="post-title">
+      Generate a .NET 6 Web API Typescript client from an OpenAPI / Swagger definition
+    </h1>
+    <div class="post-meta"><span title='2022-08-17 14:53:28 +0100 +0100'>August 17, 2022</span>&nbsp;·&nbsp;2 min&nbsp;·&nbsp;Dom Barter
+
+</div>
+  </header> <div class="toc">
+    <details >
+        <summary accesskey="c" title="(Alt + C)">
+            <span class="details">Table of Contents</span>
+        </summary>
+
+        <div class="inner"><ul><ul><ul>
+                <li>
+                    <a href="#github-repository" aria-label="GitHub Repository">GitHub Repository</a></li></ul>
+                    </ul>
+                    
+                <li>
+                    <a href="#motivation" aria-label="Motivation">Motivation</a></li>
+                <li>
+                    <a href="#generate-the-swagger-definition" aria-label="Generate The Swagger Definition">Generate The Swagger Definition</a><ul>
+                        
+                <li>
+                    <a href="#install-swashbuckle-cli" aria-label="Install Swashbuckle CLI">Install Swashbuckle CLI</a></li>
+                <li>
+                    <a href="#add-a-new-post-build-command" aria-label="Add A New Post-Build Command">Add A New Post-Build Command</a></li></ul>
+                </li>
+                <li>
+                    <a href="#generate-the-typescript-client" aria-label="Generate The TypeScript Client">Generate The TypeScript Client</a><ul>
+                        
+                <li>
+                    <a href="#install-openapi-tools" aria-label="Install OpenAPI Tools">Install OpenAPI Tools</a></li>
+                <li>
+                    <a href="#install-java" aria-label="Install Java">Install Java</a></li>
+                <li>
+                    <a href="#npm-script" aria-label="NPM Script">NPM Script</a></li></ul>
+                </li>
+                <li>
+                    <a href="#testing" aria-label="Testing">Testing</a></li>
+                <li>
+                    <a href="#references" aria-label="References">References</a>
+                </li>
+            </ul>
+        </div>
+    </details>
+</div>
+
+  <div class="post-content"><h3 id="github-repository">GitHub Repository<a hidden class="anchor" aria-hidden="true" href="#github-repository">#</a></h3>
+<p>An example of this code can be found at <a href="https://github.com/dombarter/Solar.API">https://github.com/dombarter/Solar.API</a></p>
+<h1 id="motivation">Motivation<a hidden class="anchor" aria-hidden="true" href="#motivation">#</a></h1>
+<p>Ever wondered if there was an easy way of turning your C# DTOs into TypeScript interfaces? Every wondered if we could automatically generate a TypeScript client for our API, rather than having to manually write out the function for <em>every</em> endpoint? Turns out the answer is yes, here&rsquo;s how:</p>
+<h1 id="generate-the-swagger-definition">Generate The Swagger Definition<a hidden class="anchor" aria-hidden="true" href="#generate-the-swagger-definition">#</a></h1>
+<p>If you&rsquo;ve recently created a .NET Web API you&rsquo;ll know it automatically opens up Swagger when you run the application. However it doesn&rsquo;t create a <code>swagger.json</code> file that is copied to your project folder.</p>
+<p>Let&rsquo;s get a <code>swagger.json</code> being generated:</p>
+<h2 id="install-swashbuckle-cli">Install Swashbuckle CLI<a hidden class="anchor" aria-hidden="true" href="#install-swashbuckle-cli">#</a></h2>
+<p>Run the following commands in your API project:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-cmd" data-lang="cmd">dotnet new tool-manifest
+dotnet tool install Swashbuckle.AspNetCore.Cli
+</code></pre></div><h2 id="add-a-new-post-build-command">Add A New Post-Build Command<a hidden class="anchor" aria-hidden="true" href="#add-a-new-post-build-command">#</a></h2>
+<p>Add the following task to your API <code>csproj</code> which will generate a <code>swagger.json</code> file from our API build, and then copy that file into our Vue.js directory, so we can access it using <code>npm</code> commands.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-xml" data-lang="xml"><span style="color:#f92672">&lt;Target</span> <span style="color:#a6e22e">Name=</span><span style="color:#e6db74">&#34;OpenAPI&#34;</span> <span style="color:#a6e22e">AfterTargets=</span><span style="color:#e6db74">&#34;Build&#34;</span><span style="color:#f92672">&gt;</span>
+    <span style="color:#f92672">&lt;Exec</span> <span style="color:#a6e22e">Command=</span><span style="color:#e6db74">&#34;dotnet tool restore&#34;</span> <span style="color:#a6e22e">WorkingDirectory=</span><span style="color:#e6db74">&#34;$(ProjectDir)&#34;</span> <span style="color:#f92672">/&gt;</span>
+    <span style="color:#f92672">&lt;Exec</span> <span style="color:#a6e22e">Command=</span><span style="color:#e6db74">&#34;dotnet swagger tofile --output ../Solar.Vue/references/swagger.json $(OutputPath)$(AssemblyName).dll v1&#34;</span> <span style="color:#a6e22e">WorkingDirectory=</span><span style="color:#e6db74">&#34;$(ProjectDir)&#34;</span> <span style="color:#f92672">/&gt;</span>
+<span style="color:#f92672">&lt;/Target&gt;</span>
+</code></pre></div><p>If you now build the project, you should find a <code>swagger.json</code> file under <code>Solar.Vue/references/</code>.</p>
+<h1 id="generate-the-typescript-client">Generate The TypeScript Client<a hidden class="anchor" aria-hidden="true" href="#generate-the-typescript-client">#</a></h1>
+<p>Now we have our hands on a <code>swagger.json</code> we now need to build a TypeScript client. There are a couple of steps:</p>
+<h2 id="install-openapi-tools">Install OpenAPI Tools<a hidden class="anchor" aria-hidden="true" href="#install-openapi-tools">#</a></h2>
+<p>Install the following <code>npm</code> package:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-cmd" data-lang="cmd">npm i @openapitools/openapi-generator-cli -D
+</code></pre></div><p>OpenAPI Tools is the officially supported package for everything OpenAPI/Swagger (see <a href="https://openapi.tools/">https://openapi.tools/</a>)</p>
+<h2 id="install-java">Install Java<a hidden class="anchor" aria-hidden="true" href="#install-java">#</a></h2>
+<p>The above generator requires Java to be installed. If you&rsquo;re on windows you can easily install it using <code>chocolatey</code>:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-cmd" data-lang="cmd">choco install oraclejdk
+</code></pre></div><h2 id="npm-script">NPM Script<a hidden class="anchor" aria-hidden="true" href="#npm-script">#</a></h2>
+<p>And finally, we need to add a <code>npm</code> script to build the client:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-cmd" data-lang="cmd"><span style="color:#e6db74">&#34;generate-api-client&#34;</span>: <span style="color:#e6db74">&#34;openapi-generator-cli generate -i ./references/swagger.json -g typescript-axios -o ./src/api/&#34;</span>
+</code></pre></div><ul>
+<li><code>./references/swagger.json</code> defines where the definition is</li>
+<li><code>./src/api</code> defines where the client should be created</li>
+<li><code>typescript-axios</code> is a type of client (specifically written in TypeScript and using axios for http calls)</li>
+</ul>
+<h1 id="testing">Testing<a hidden class="anchor" aria-hidden="true" href="#testing">#</a></h1>
+<p>You will now have a fully fledged TypeScript client with DTO types. Here is an example of how you can use it!</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-ts" data-lang="ts"><span style="color:#66d9ef">import</span> { <span style="color:#a6e22e">AccountApi</span> } <span style="color:#66d9ef">from</span> <span style="color:#e6db74">&#34;@/api&#34;</span>;
+
+<span style="color:#66d9ef">const</span> <span style="color:#a6e22e">api</span> <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> <span style="color:#a6e22e">AccountApi</span>();
+
+<span style="color:#66d9ef">const</span> <span style="color:#a6e22e">result</span> <span style="color:#f92672">=</span> <span style="color:#66d9ef">await</span> <span style="color:#a6e22e">api</span>.<span style="color:#a6e22e">userLoginPost</span>({
+  <span style="color:#a6e22e">email</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;user@email.com&#34;</span>,
+  <span style="color:#a6e22e">password</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;password&#34;</span>,
+});
+</code></pre></div><h1 id="references">References<a hidden class="anchor" aria-hidden="true" href="#references">#</a></h1>
+<ul>
+<li><a href="https://www.npmjs.com/package/@openapitools/openapi-generator-cli">https://www.npmjs.com/package/@openapitools/openapi-generator-cli</a></li>
+<li><a href="https://khalidabuhakmeh.com/generate-aspnet-core-openapi-spec-at-build-time">https://khalidabuhakmeh.com/generate-aspnet-core-openapi-spec-at-build-time</a></li>
+<li><a href="https://chrlschn.medium.com/net-6-web-apis-with-openapi-typescript-client-generation-a743e7f8e4f5">https://chrlschn.medium.com/net-6-web-apis-with-openapi-typescript-client-generation-a743e7f8e4f5</a></li>
+<li><a href="https://stackoverflow.com/questions/33283071/swagger-webapi-create-json-on-build">https://stackoverflow.com/questions/33283071/swagger-webapi-create-json-on-build</a></li>
+</ul>
+
+
+  </div>
+
+  <footer class="post-footer">
+    <ul class="post-tags">
+    </ul>
+  </footer>
+</article>
+    </main>
+    
+<footer class="footer">
+    <span>&copy; 2022 <a href="https://dombarter.co.uk/">Dom Barter</a></span>
+    <span>
+        Powered by
+        <a href="https://gohugo.io/" rel="noopener noreferrer" target="_blank">Hugo</a> &
+        <a href="https://github.com/adityatelange/hugo-PaperMod/" rel="noopener" target="_blank">PaperMod</a>
+    </span>
+</footer>
+<a href="#top" aria-label="go to top" title="Go to Top (Alt + G)" class="top-link" id="top-link" accesskey="g">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 6" fill="currentColor">
+        <path d="M12 6H0l6-6z" />
+    </svg>
+</a>
+
+<script>
+    let menu = document.getElementById('menu')
+    if (menu) {
+        menu.scrollLeft = localStorage.getItem("menu-scroll-position");
+        menu.onscroll = function () {
+            localStorage.setItem("menu-scroll-position", menu.scrollLeft);
+        }
+    }
+
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener("click", function (e) {
+            e.preventDefault();
+            var id = this.getAttribute("href").substr(1);
+            if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView({
+                    behavior: "smooth"
+                });
+            } else {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView();
+            }
+            if (id === "top") {
+                history.replaceState(null, null, " ");
+            } else {
+                history.pushState(null, null, `#${id}`);
+            }
+        });
+    });
+
+</script>
+<script>
+    var mybutton = document.getElementById("top-link");
+    window.onscroll = function () {
+        if (document.body.scrollTop > 800 || document.documentElement.scrollTop > 800) {
+            mybutton.style.visibility = "visible";
+            mybutton.style.opacity = "1";
+        } else {
+            mybutton.style.visibility = "hidden";
+            mybutton.style.opacity = "0";
+        }
+    };
+
+</script>
+<script>
+    document.getElementById("theme-toggle").addEventListener("click", () => {
+        if (document.body.className.includes("dark")) {
+            document.body.classList.remove('dark');
+            localStorage.setItem("pref-theme", 'light');
+        } else {
+            document.body.classList.add('dark');
+            localStorage.setItem("pref-theme", 'dark');
+        }
+    })
+
+</script>
+<script>
+    document.querySelectorAll('pre > code').forEach((codeblock) => {
+        const container = codeblock.parentNode.parentNode;
+
+        const copybutton = document.createElement('button');
+        copybutton.classList.add('copy-code');
+        copybutton.innerHTML = 'copy';
+
+        function copyingDone() {
+            copybutton.innerHTML = 'copied!';
+            setTimeout(() => {
+                copybutton.innerHTML = 'copy';
+            }, 2000);
+        }
+
+        copybutton.addEventListener('click', (cb) => {
+            if ('clipboard' in navigator) {
+                navigator.clipboard.writeText(codeblock.textContent);
+                copyingDone();
+                return;
+            }
+
+            const range = document.createRange();
+            range.selectNodeContents(codeblock);
+            const selection = window.getSelection();
+            selection.removeAllRanges();
+            selection.addRange(range);
+            try {
+                document.execCommand('copy');
+                copyingDone();
+            } catch (e) { };
+            selection.removeRange(range);
+        });
+
+        if (container.classList.contains("highlight")) {
+            container.appendChild(copybutton);
+        } else if (container.parentNode.firstChild == container) {
+            
+        } else if (codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.nodeName == "TABLE") {
+            
+            codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.appendChild(copybutton);
+        } else {
+            
+            codeblock.parentNode.appendChild(copybutton);
+        }
+    });
+</script>
+</body>
+
+</html>
