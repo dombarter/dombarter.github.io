@@ -11,7 +11,7 @@ All the code in this series can be found at https://github.com/dombarter/Solar.A
 
 # Motivation
 
-In my [previous post](/posts/add-dotnet-jwts-to-web-api), I explored how to manage login, registration and role assignment of our users using .NET Identity. In this post I am going to add JWT based authentication and authorization to our .NET 6 Web API.
+In my [previous post](/posts/add-dotnet-identity-roles-to-web-api), I explored how to manage login, registration and role assignment of our users using .NET Identity. In this post I am going to add JWT based authentication and authorization to our .NET 6 Web API.
 
 # What are JWTs?
 
@@ -215,7 +215,7 @@ public async Task<ActionResult<IdentityUser>> GetLoggedInUser()
 }
 ```
 
-# Supporting JWT support to Swagger
+# Adding JWT support to Swagger
 
 And finally, if you'd like to support the Authorize window in Swagger (adds the ability to pass the Bearer token with each subsequent request), add the following to your startup class:
 
