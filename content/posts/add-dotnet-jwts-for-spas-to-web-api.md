@@ -127,6 +127,8 @@ builder.Services.AddSwaggerGen();
 
 You should now be able to open the Swagger page for your API, make a login request and then make a call to a protected endpoint and you will get a successful response. If you look in the dev tools you should notice the `solar-access-token` has been set. Try removing it and see what happens!
 
+![cookie](/images/jwt-cookie-swagger/cookie.png)
+
 # Connecting To A Vue.js SPA
 
 Cookies work when using a system such as Swagger, but when using them in Vue.js we need a bit more configuration. This is because it is another web site, so CORs comes into play.
