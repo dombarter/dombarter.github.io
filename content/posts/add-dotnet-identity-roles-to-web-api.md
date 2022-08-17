@@ -1,9 +1,13 @@
 ---
-title: "Add role based authorization to a .NET Web API / .NET Identity project"
+title: "(Part 2) Add .NET Identity roles to a .NET 6 Web API"
 date: 2022-08-17T09:08:06+01:00
 draft: false
-summary: "Assuming you have .NET Identity setup in your Web API project, let's now add assign roles to our users to authorize them on different endpoints"
+summary: "Manage your user's roles on a .NET Web API using .NET Identity"
 ---
+
+### GitHub Repository
+
+All the code in this series can be found at https://github.com/dombarter/Solar.API
 
 # Motivation
 

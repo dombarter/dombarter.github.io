@@ -1,9 +1,13 @@
 ---
-title: "Add .NET Identity to a Web API project in .NET 6"
+title: "(Part 1) Add .NET Identity login and registration to a .NET 6 Web API"
 date: 2022-08-17T08:46:10+01:00
 draft: false
-summary: "Leverage the power of .NET Identity Core in your .NET 6 Web API project to manage users, logins and roles"
+summary: "Manage the login and registration of your users on a .NET Web API using .NET Identity"
 ---
+
+### GitHub Repository
+
+All the code in this series can be found at https://github.com/dombarter/Solar.API
 
 # The Motivation
 
