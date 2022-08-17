@@ -1,0 +1,465 @@
+<!DOCTYPE html>
+<html lang="en" dir="auto">
+
+<head><meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="robots" content="index, follow">
+<title>Add role based authorization to a .NET Web API / .NET Identity project | Dom Barter</title>
+<meta name="keywords" content="">
+<meta name="description" content="Assuming you have .NET Identity setup in your Web API project, let&rsquo;s now add assign roles to our users to authorize them on different endpoints">
+<meta name="author" content="Dom Barter">
+<link rel="canonical" href="https://dombarter.co.uk/posts/add-role-based-authorization-with-dotnet-identity/">
+<link crossorigin="anonymous" href="/assets/css/stylesheet.bc1149f4a72aa4858d3a9f71462f75e5884ffe8073ea9d6d5761d5663d651e20.css" integrity="sha256-vBFJ9KcqpIWNOp9xRi915YhP/oBz6p1tV2HVZj1lHiA=" rel="preload stylesheet" as="style">
+<script defer crossorigin="anonymous" src="/assets/js/highlight.f413e19d0714851f6474e7ee9632408e58ac146fbdbe62747134bea2fa3415e0.js" integrity="sha256-9BPhnQcUhR9kdOfuljJAjlisFG&#43;9vmJ0cTS&#43;ovo0FeA="
+    onload="hljs.initHighlightingOnLoad();"></script>
+<link rel="icon" href="https://dombarter.co.uk/favicon.ico">
+<link rel="icon" type="image/png" sizes="16x16" href="https://dombarter.co.uk/favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="https://dombarter.co.uk/favicon-32x32.png">
+<link rel="apple-touch-icon" href="https://dombarter.co.uk/apple-touch-icon.png">
+<link rel="mask-icon" href="https://dombarter.co.uk/safari-pinned-tab.svg">
+<meta name="theme-color" content="#2e2e33">
+<meta name="msapplication-TileColor" content="#2e2e33">
+<noscript>
+    <style>
+        #theme-toggle,
+        .top-link {
+            display: none;
+        }
+
+    </style>
+    <style>
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --theme: rgb(29, 30, 32);
+                --entry: rgb(46, 46, 51);
+                --primary: rgb(218, 218, 219);
+                --secondary: rgb(155, 156, 157);
+                --tertiary: rgb(65, 66, 68);
+                --content: rgb(196, 196, 197);
+                --hljs-bg: rgb(46, 46, 51);
+                --code-bg: rgb(55, 56, 62);
+                --border: rgb(51, 51, 51);
+            }
+
+            .list {
+                background: var(--theme);
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-track {
+                background: 0 0;
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-thumb {
+                border-color: var(--theme);
+            }
+        }
+
+    </style>
+</noscript><meta property="og:title" content="Add role based authorization to a .NET Web API / .NET Identity project" />
+<meta property="og:description" content="Assuming you have .NET Identity setup in your Web API project, let&rsquo;s now add assign roles to our users to authorize them on different endpoints" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://dombarter.co.uk/posts/add-role-based-authorization-with-dotnet-identity/" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2022-08-17T09:08:06&#43;01:00" />
+<meta property="article:modified_time" content="2022-08-17T09:08:06&#43;01:00" />
+
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Add role based authorization to a .NET Web API / .NET Identity project"/>
+<meta name="twitter:description" content="Assuming you have .NET Identity setup in your Web API project, let&rsquo;s now add assign roles to our users to authorize them on different endpoints"/>
+
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position":  1 ,
+      "name": "Posts",
+      "item": "https://dombarter.co.uk/posts/"
+    }, 
+    {
+      "@type": "ListItem",
+      "position":  2 ,
+      "name": "Add role based authorization to a .NET Web API / .NET Identity project",
+      "item": "https://dombarter.co.uk/posts/add-role-based-authorization-with-dotnet-identity/"
+    }
+  ]
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "Add role based authorization to a .NET Web API / .NET Identity project",
+  "name": "Add role based authorization to a .NET Web API \/ .NET Identity project",
+  "description": "Assuming you have .NET Identity setup in your Web API project, let\u0026rsquo;s now add assign roles to our users to authorize them on different endpoints",
+  "keywords": [
+    
+  ],
+  "articleBody": "Motivation In my previous post, I explored how to add .NET Identity to a .NET 6 Web API project. We managed to register users and then login as them. Now it would be good to add roles to those users - so once we have a token/session system setup we can restrict users to different endpoints.\nAmend The Startup The first thing we need to do is tell Identity we are going to be using roles. Go to your startup class, Program.cs:\nbuilder.Services.AddIdentity(options = { options.Password.RequireDigit = true; options.Password.RequireLowercase = true; options.Password.RequireNonAlphanumeric = true; options.Password.RequiredLength = 8; }) .AddRoles() // .AddEntityFrameworkStores(); Define The Roles Next, it is a good idea to create a class where we define the possible roles in the system rather than relying on ‘magic strings’. Create this class, Roles.cs, somewhere:\nnamespace Solar.Common.Roles { public static class Roles { public const string Admin = \"Admin\"; public const string User = \"User\"; } } Store The Roles Now we need to make sure these roles are added to the database, so we can link them to our current user. The best place to to do this is in our startup class, Program.cs. I’ve also added a line that will make sure our database os migrated each time we startup - this way we will never miss out on a change:\n... var app = builder.Build(); using (var scope = app.Services.CreateScope()) { var services = scope.ServiceProvider; // Migrate the database  var db = services.GetRequiredService(); db.Database.Migrate(); // Add the roles  var roleManager = services.GetRequiredService(); if (!await roleManager.RoleExistsAsync(Roles.Admin)) { await roleManager.CreateAsync(new IdentityRole(Roles.Admin)); } if (!await roleManager.RoleExistsAsync(Roles.User)) { await roleManager.CreateAsync(new IdentityRole(Roles.User)); } } Assign Roles We can now assign roles to a user like so (register action):\n[HttpPost] [Route(\"register\")] [AllowAnonymous] public async Task Register([FromBody] RegisterDto model) { var user = new IdentityUser { UserName = model.Email, Email = model.Email }; var createResult = await _userManager.CreateAsync(user, model.Password); if (!createResult.Succeeded) { return new BadRequestObjectResult(createResult.Errors); } // Assign User role  var assignRoleResult = await _userManager.AddToRoleAsync(user, Roles.User); if (!assignRoleResult.Succeeded) { return new BadRequestObjectResult(assignRoleResult.Errors); } return Ok(); } Authorization Attributes Currently roles will have no effect until we setup a session/token system (watch out for my next post!), however once this is setup, we will be able to apply the Authorize attributes at the controller and action level like so:\n[ApiController] [Route(\"moons\")] [Authorize] public class MoonController : Controller { private readonly Liststring Moons = new Liststring { \"Moon\", \"Europa\", \"Titan\", \"Ganymede\", \"Milmas\", \"Hyperion\", \"Dione\", \"Kiviuq\" }; private readonly Random Random = new Random(); [HttpGet] [Route(\"one\")] [Authorize(Roles = \"User\")] public ActionResultstring GetRandomMoon() { return Moons[Random.Next(Moons.Count)]; } [HttpGet] [Route(\"two\")] [Authorize(Roles = \"Admin\")] public ActionResultstring GetTwoRandomMoons() { return $\"{Moons[Random.Next(Moons.Count)]}, {Moons[Random.Next(Moons.Count)]}\"; } } References  https://docs.microsoft.com/en-us/aspnet/core/security/authorization/roles?view=aspnetcore-6.0 https://www.c-sharpcorner.com/article/jwt-authentication-and-authorization-in-net-6-0-with-identity-framework/ https://docs.microsoft.com/en-us/aspnet/core/security/authorization/secure-data?view=aspnetcore-6.0  ",
+  "wordCount" : "451",
+  "inLanguage": "en",
+  "datePublished": "2022-08-17T09:08:06+01:00",
+  "dateModified": "2022-08-17T09:08:06+01:00",
+  "author":{
+    "@type": "Person",
+    "name": "Dom Barter"
+  },
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "https://dombarter.co.uk/posts/add-role-based-authorization-with-dotnet-identity/"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "Dom Barter",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https://dombarter.co.uk/favicon.ico"
+    }
+  }
+}
+</script>
+</head>
+
+<body class="" id="top">
+<script>
+    if (localStorage.getItem("pref-theme") === "dark") {
+        document.body.classList.add('dark');
+    } else if (localStorage.getItem("pref-theme") === "light") {
+        document.body.classList.remove('dark')
+    } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        document.body.classList.add('dark');
+    }
+
+</script>
+
+<header class="header">
+    <nav class="nav">
+        <div class="logo">
+            <a href="https://dombarter.co.uk/" accesskey="h" title="Dom Barter (Alt + H)">Dom Barter</a>
+            <div class="logo-switches">
+                <button id="theme-toggle" accesskey="t" title="(Alt + T)">
+                    <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                    </svg>
+                    <svg id="sun" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="5"></circle>
+                        <line x1="12" y1="1" x2="12" y2="3"></line>
+                        <line x1="12" y1="21" x2="12" y2="23"></line>
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                        <line x1="1" y1="12" x2="3" y2="12"></line>
+                        <line x1="21" y1="12" x2="23" y2="12"></line>
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                    </svg>
+                </button>
+            </div>
+        </div>
+        <ul id="menu">
+            <li>
+                <a href="https://dombarter.co.uk/about/" title="About">
+                    <span>About</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://dombarter.co.uk/posts/" title="Posts">
+                    <span>Posts</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://dombarter.co.uk/projects/" title="Projects">
+                    <span>Projects</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://dombarter.co.uk/search/" title="Search (Alt &#43; /)" accesskey=/>
+                    <span>Search</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+</header>
+<main class="main">
+
+<article class="post-single">
+  <header class="post-header">
+    <div class="breadcrumbs"><a href="https://dombarter.co.uk/">Home</a>&nbsp;»&nbsp;<a href="https://dombarter.co.uk/posts/">Posts</a></div>
+    <h1 class="post-title">
+      Add role based authorization to a .NET Web API / .NET Identity project
+    </h1>
+    <div class="post-meta"><span title='2022-08-17 09:08:06 +0100 +0100'>August 17, 2022</span>&nbsp;·&nbsp;3 min&nbsp;·&nbsp;Dom Barter
+
+</div>
+  </header> <div class="toc">
+    <details >
+        <summary accesskey="c" title="(Alt + C)">
+            <span class="details">Table of Contents</span>
+        </summary>
+
+        <div class="inner"><ul>
+                <li>
+                    <a href="#motivation" aria-label="Motivation">Motivation</a></li>
+                <li>
+                    <a href="#amend-the-startup" aria-label="Amend The Startup">Amend The Startup</a></li>
+                <li>
+                    <a href="#define-the-roles" aria-label="Define The Roles">Define The Roles</a></li>
+                <li>
+                    <a href="#store-the-roles" aria-label="Store The Roles">Store The Roles</a></li>
+                <li>
+                    <a href="#assign-roles" aria-label="Assign Roles">Assign Roles</a></li>
+                <li>
+                    <a href="#authorization-attributes" aria-label="Authorization Attributes">Authorization Attributes</a></li>
+                <li>
+                    <a href="#references" aria-label="References">References</a>
+                </li>
+            </ul>
+        </div>
+    </details>
+</div>
+
+  <div class="post-content"><h1 id="motivation">Motivation<a hidden class="anchor" aria-hidden="true" href="#motivation">#</a></h1>
+<p>In my <a href="/posts/add-dotnet-identity-to-web-api">previous post</a>, I explored how to add .NET Identity to a .NET 6 Web API project. We managed to register users and then login as them. Now it would be good to add roles to those users - so once we have a token/session system setup we can restrict users to different endpoints.</p>
+<h1 id="amend-the-startup">Amend The Startup<a hidden class="anchor" aria-hidden="true" href="#amend-the-startup">#</a></h1>
+<p>The first thing we need to do is tell Identity we are going to be using roles. Go to your startup class, <code>Program.cs</code>:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp">builder.Services.AddIdentity&lt;IdentityUser, IdentityRole&gt;(options =&gt;
+{
+    options.Password.RequireDigit = <span style="color:#66d9ef">true</span>;
+    options.Password.RequireLowercase = <span style="color:#66d9ef">true</span>;
+    options.Password.RequireNonAlphanumeric = <span style="color:#66d9ef">true</span>;
+    options.Password.RequiredLength = <span style="color:#ae81ff">8</span>;
+})
+.AddRoles&lt;IdentityRole&gt;() <span style="color:#75715e">// &lt;--- add this line
+</span><span style="color:#75715e"></span>.AddEntityFrameworkStores&lt;SolarDbContext&gt;();
+</code></pre></div><h1 id="define-the-roles">Define The Roles<a hidden class="anchor" aria-hidden="true" href="#define-the-roles">#</a></h1>
+<p>Next, it is a good idea to create a class where we define the possible roles in the system rather than relying on &lsquo;magic strings&rsquo;. Create this class, <code>Roles.cs</code>, somewhere:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">namespace</span> Solar.Common.Roles
+{
+    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Roles</span>
+    {
+        <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">const</span> <span style="color:#66d9ef">string</span> Admin = <span style="color:#e6db74">&#34;Admin&#34;</span>;
+        <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">const</span> <span style="color:#66d9ef">string</span> User = <span style="color:#e6db74">&#34;User&#34;</span>;
+    }
+}
+</code></pre></div><h1 id="store-the-roles">Store The Roles<a hidden class="anchor" aria-hidden="true" href="#store-the-roles">#</a></h1>
+<p>Now we need to make sure these roles are added to the database, so we can link them to our current user. The best place to to do this is in our startup class, <code>Program.cs</code>. I&rsquo;ve also added a line that will make sure our database os migrated each time we startup - this way we will never miss out on a change:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp">...
+<span style="color:#66d9ef">var</span> app = builder.Build();
+
+<span style="color:#66d9ef">using</span> (<span style="color:#66d9ef">var</span> scope = app.Services.CreateScope())
+{
+    <span style="color:#66d9ef">var</span> services = scope.ServiceProvider;
+
+    <span style="color:#75715e">// Migrate the database
+</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">var</span> db = services.GetRequiredService&lt;SolarDbContext&gt;();
+    db.Database.Migrate();
+
+    <span style="color:#75715e">// Add the roles
+</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">var</span> roleManager = services.GetRequiredService&lt;RoleManager&lt;IdentityRole&gt;&gt;();
+    <span style="color:#66d9ef">if</span> (!<span style="color:#66d9ef">await</span> roleManager.RoleExistsAsync(Roles.Admin))
+    {
+        <span style="color:#66d9ef">await</span> roleManager.CreateAsync(<span style="color:#66d9ef">new</span> IdentityRole(Roles.Admin));
+    }
+    <span style="color:#66d9ef">if</span> (!<span style="color:#66d9ef">await</span> roleManager.RoleExistsAsync(Roles.User))
+    {
+        <span style="color:#66d9ef">await</span> roleManager.CreateAsync(<span style="color:#66d9ef">new</span> IdentityRole(Roles.User));
+    }
+}
+</code></pre></div><h1 id="assign-roles">Assign Roles<a hidden class="anchor" aria-hidden="true" href="#assign-roles">#</a></h1>
+<p>We can now assign roles to a user like so (register action):</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#a6e22e">[HttpPost]</span>
+<span style="color:#a6e22e">[Route(&#34;register&#34;)]</span>
+<span style="color:#a6e22e">[AllowAnonymous]</span>
+<span style="color:#66d9ef">public</span> <span style="color:#66d9ef">async</span> Task&lt;IActionResult&gt; Register([FromBody] RegisterDto model)
+{
+    <span style="color:#66d9ef">var</span> user = <span style="color:#66d9ef">new</span> IdentityUser
+    {
+        UserName = model.Email,
+        Email = model.Email
+    };
+
+    <span style="color:#66d9ef">var</span> createResult = <span style="color:#66d9ef">await</span> <span style="color:#ae81ff">_</span>userManager.CreateAsync(user, model.Password);
+
+    <span style="color:#66d9ef">if</span> (!createResult.Succeeded)
+    {
+        <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">new</span> BadRequestObjectResult(createResult.Errors);
+    }
+
+    <span style="color:#75715e">// Assign User role
+</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">var</span> assignRoleResult = <span style="color:#66d9ef">await</span> <span style="color:#ae81ff">_</span>userManager.AddToRoleAsync(user, Roles.User);
+
+    <span style="color:#66d9ef">if</span> (!assignRoleResult.Succeeded)
+    {
+        <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">new</span> BadRequestObjectResult(assignRoleResult.Errors);
+    }
+
+    <span style="color:#66d9ef">return</span> Ok();
+}
+</code></pre></div><h1 id="authorization-attributes">Authorization Attributes<a hidden class="anchor" aria-hidden="true" href="#authorization-attributes">#</a></h1>
+<p>Currently roles will have no effect until we setup a session/token system (watch out for my next post!), however once this is setup, we will be able to apply the <code>Authorize</code> attributes at the controller and action level like so:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#a6e22e">[ApiController]</span>
+<span style="color:#a6e22e">[Route(&#34;moons&#34;)]</span>
+<span style="color:#a6e22e">[Authorize]</span>
+<span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">MoonController</span> : Controller
+{
+    <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">readonly</span> List&lt;<span style="color:#66d9ef">string</span>&gt; Moons = <span style="color:#66d9ef">new</span> List&lt;<span style="color:#66d9ef">string</span>&gt; { <span style="color:#e6db74">&#34;Moon&#34;</span>, <span style="color:#e6db74">&#34;Europa&#34;</span>, <span style="color:#e6db74">&#34;Titan&#34;</span>, <span style="color:#e6db74">&#34;Ganymede&#34;</span>, <span style="color:#e6db74">&#34;Milmas&#34;</span>, <span style="color:#e6db74">&#34;Hyperion&#34;</span>, <span style="color:#e6db74">&#34;Dione&#34;</span>, <span style="color:#e6db74">&#34;Kiviuq&#34;</span> };
+    <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">readonly</span> Random Random = <span style="color:#66d9ef">new</span> Random();
+<span style="color:#a6e22e">
+</span><span style="color:#a6e22e">    [HttpGet]</span>
+<span style="color:#a6e22e">    [Route(&#34;one&#34;)]</span>
+<span style="color:#a6e22e">    [Authorize(Roles = &#34;User&#34;)]</span>
+    <span style="color:#66d9ef">public</span> ActionResult&lt;<span style="color:#66d9ef">string</span>&gt; GetRandomMoon()
+    {
+
+        <span style="color:#66d9ef">return</span> Moons[Random.Next(Moons.Count)];
+    }
+<span style="color:#a6e22e">
+</span><span style="color:#a6e22e">    [HttpGet]</span>
+<span style="color:#a6e22e">    [Route(&#34;two&#34;)]</span>
+<span style="color:#a6e22e">    [Authorize(Roles = &#34;Admin&#34;)]</span>
+    <span style="color:#66d9ef">public</span> ActionResult&lt;<span style="color:#66d9ef">string</span>&gt; GetTwoRandomMoons()
+    {
+        <span style="color:#66d9ef">return</span> <span style="color:#e6db74">$&#34;{Moons[Random.Next(Moons.Count)]}, {Moons[Random.Next(Moons.Count)]}&#34;</span>;
+    }
+}
+</code></pre></div><h1 id="references">References<a hidden class="anchor" aria-hidden="true" href="#references">#</a></h1>
+<ul>
+<li><a href="https://docs.microsoft.com/en-us/aspnet/core/security/authorization/roles?view=aspnetcore-6.0">https://docs.microsoft.com/en-us/aspnet/core/security/authorization/roles?view=aspnetcore-6.0</a></li>
+<li><a href="https://www.c-sharpcorner.com/article/jwt-authentication-and-authorization-in-net-6-0-with-identity-framework/">https://www.c-sharpcorner.com/article/jwt-authentication-and-authorization-in-net-6-0-with-identity-framework/</a></li>
+<li><a href="https://docs.microsoft.com/en-us/aspnet/core/security/authorization/secure-data?view=aspnetcore-6.0">https://docs.microsoft.com/en-us/aspnet/core/security/authorization/secure-data?view=aspnetcore-6.0</a></li>
+</ul>
+
+
+  </div>
+
+  <footer class="post-footer">
+    <ul class="post-tags">
+    </ul>
+  </footer>
+</article>
+    </main>
+    
+<footer class="footer">
+    <span>&copy; 2022 <a href="https://dombarter.co.uk/">Dom Barter</a></span>
+    <span>
+        Powered by
+        <a href="https://gohugo.io/" rel="noopener noreferrer" target="_blank">Hugo</a> &
+        <a href="https://github.com/adityatelange/hugo-PaperMod/" rel="noopener" target="_blank">PaperMod</a>
+    </span>
+</footer>
+<a href="#top" aria-label="go to top" title="Go to Top (Alt + G)" class="top-link" id="top-link" accesskey="g">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 6" fill="currentColor">
+        <path d="M12 6H0l6-6z" />
+    </svg>
+</a>
+
+<script>
+    let menu = document.getElementById('menu')
+    if (menu) {
+        menu.scrollLeft = localStorage.getItem("menu-scroll-position");
+        menu.onscroll = function () {
+            localStorage.setItem("menu-scroll-position", menu.scrollLeft);
+        }
+    }
+
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener("click", function (e) {
+            e.preventDefault();
+            var id = this.getAttribute("href").substr(1);
+            if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView({
+                    behavior: "smooth"
+                });
+            } else {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView();
+            }
+            if (id === "top") {
+                history.replaceState(null, null, " ");
+            } else {
+                history.pushState(null, null, `#${id}`);
+            }
+        });
+    });
+
+</script>
+<script>
+    var mybutton = document.getElementById("top-link");
+    window.onscroll = function () {
+        if (document.body.scrollTop > 800 || document.documentElement.scrollTop > 800) {
+            mybutton.style.visibility = "visible";
+            mybutton.style.opacity = "1";
+        } else {
+            mybutton.style.visibility = "hidden";
+            mybutton.style.opacity = "0";
+        }
+    };
+
+</script>
+<script>
+    document.getElementById("theme-toggle").addEventListener("click", () => {
+        if (document.body.className.includes("dark")) {
+            document.body.classList.remove('dark');
+            localStorage.setItem("pref-theme", 'light');
+        } else {
+            document.body.classList.add('dark');
+            localStorage.setItem("pref-theme", 'dark');
+        }
+    })
+
+</script>
+<script>
+    document.querySelectorAll('pre > code').forEach((codeblock) => {
+        const container = codeblock.parentNode.parentNode;
+
+        const copybutton = document.createElement('button');
+        copybutton.classList.add('copy-code');
+        copybutton.innerHTML = 'copy';
+
+        function copyingDone() {
+            copybutton.innerHTML = 'copied!';
+            setTimeout(() => {
+                copybutton.innerHTML = 'copy';
+            }, 2000);
+        }
+
+        copybutton.addEventListener('click', (cb) => {
+            if ('clipboard' in navigator) {
+                navigator.clipboard.writeText(codeblock.textContent);
+                copyingDone();
+                return;
+            }
+
+            const range = document.createRange();
+            range.selectNodeContents(codeblock);
+            const selection = window.getSelection();
+            selection.removeAllRanges();
+            selection.addRange(range);
+            try {
+                document.execCommand('copy');
+                copyingDone();
+            } catch (e) { };
+            selection.removeRange(range);
+        });
+
+        if (container.classList.contains("highlight")) {
+            container.appendChild(copybutton);
+        } else if (container.parentNode.firstChild == container) {
+            
+        } else if (codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.nodeName == "TABLE") {
+            
+            codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.appendChild(copybutton);
+        } else {
+            
+            codeblock.parentNode.appendChild(copybutton);
+        }
+    });
+</script>
+</body>
+
+</html>
