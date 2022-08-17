@@ -28,25 +28,25 @@ _Image from [Medium](https://medium.com/devsondevs/gitflow-workflow-continuous-i
 
 ### Starting a new feature
 
-You've just been assigned a ticket and it's time to start coding! You will want to create a new feature branch based off `develop`. For example `feature/add-profile-page`. Put all your commits and changes related to a given ticket/workload on this branch. Once you have finished your changes open a pull request from your feature branch to `develop`. 
+You've just been assigned a ticket and it's time to start coding! You will want to create a new feature branch based off `develop`. For example `feature/add-profile-page`. Put all your commits and changes related to a given ticket/workload on this branch. Once you have finished your changes open a pull request from your feature branch to `develop`.
 
-When doing feature work you will simply by winding in and out of `develop`. 
+When doing feature work you will simply by winding in and out of `develop`.
 
 ### Code reviewing
 
-Whenever work wants to be moved onto the `develop` branch it must be peer reviewed by a senior developer. As a junior developer this is great because you can receive feedback but it also ensures code style is maintained and no glaring issues are introduced. It also means code can enter the the `develop` branch without people knowing about it! 
+Whenever work wants to be moved onto the `develop` branch it must be peer reviewed by a senior developer. As a junior developer this is great because you can receive feedback but it also ensures code style is maintained and no glaring issues are introduced. It also means code can enter the the `develop` branch without people knowing about it!
 
 ### Deployments
 
-There is now a collection of tickets on the develop branch ready to be deployed. At this point a new release branch will be made such as `release/001.002.000` based off `develop`. On this branch you can make final config changes such as changing database connection strings to live ones rather than local ones. 
+There is now a collection of tickets on the develop branch ready to be deployed. At this point a new release branch will be made such as `release/001.002.000` based off `develop`. On this branch you can make final config changes such as changing database connection strings to live ones rather than local ones.
 
-Once this is ready you should merge the release branch into `master` and perform your deployment. 
+Once this is ready you should merge the release branch into `master` and perform your deployment.
 
 ### Hotfixes
 
-If there are any issues on production environment and you need a quicker fix than following the 'feature -> develop -> release -> master' route, you can make a `hotfix` branch. Eg. `hotfix/001.002.001`. In this branch you can make brief changes and quickly get them deployed. 
+If there are any issues on production environment and you need a quicker fix than following the 'feature -> develop -> release -> master' route, you can make a `hotfix` branch. Eg. `hotfix/001.002.001`. In this branch you can make brief changes and quickly get them deployed.
 
-This `hotfix` branch should be merged into `master` to be deployed, and back into `develop` to ensure your changes don't get lost. 
+This `hotfix` branch should be merged into `master` to be deployed, and back into `develop` to ensure your changes don't get lost.
 
 ## More information
 
