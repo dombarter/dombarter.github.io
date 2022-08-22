@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+<html lang="en" dir="auto">
+
+<head><meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="robots" content="index, follow">
+<title>Validate JWT cookies sent to an Azure Functions application | Dom Barter</title>
+<meta name="keywords" content="">
+<meta name="description" content="Validate JWTs as cookies, that are sent to an Azure Functions application">
+<meta name="author" content="Dom Barter">
+<link rel="canonical" href="https://dombarter.co.uk/posts/validate-jwt-cookies-in-dotnet-functions/">
+<link crossorigin="anonymous" href="/assets/css/stylesheet.bc1149f4a72aa4858d3a9f71462f75e5884ffe8073ea9d6d5761d5663d651e20.css" integrity="sha256-vBFJ9KcqpIWNOp9xRi915YhP/oBz6p1tV2HVZj1lHiA=" rel="preload stylesheet" as="style">
+<script defer crossorigin="anonymous" src="/assets/js/highlight.f413e19d0714851f6474e7ee9632408e58ac146fbdbe62747134bea2fa3415e0.js" integrity="sha256-9BPhnQcUhR9kdOfuljJAjlisFG&#43;9vmJ0cTS&#43;ovo0FeA="
+    onload="hljs.initHighlightingOnLoad();"></script>
+<link rel="icon" href="https://dombarter.co.uk/favicon.ico">
+<link rel="icon" type="image/png" sizes="16x16" href="https://dombarter.co.uk/favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="https://dombarter.co.uk/favicon-32x32.png">
+<link rel="apple-touch-icon" href="https://dombarter.co.uk/apple-touch-icon.png">
+<link rel="mask-icon" href="https://dombarter.co.uk/safari-pinned-tab.svg">
+<meta name="theme-color" content="#2e2e33">
+<meta name="msapplication-TileColor" content="#2e2e33">
+<noscript>
+    <style>
+        #theme-toggle,
+        .top-link {
+            display: none;
+        }
+
+    </style>
+    <style>
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --theme: rgb(29, 30, 32);
+                --entry: rgb(46, 46, 51);
+                --primary: rgb(218, 218, 219);
+                --secondary: rgb(155, 156, 157);
+                --tertiary: rgb(65, 66, 68);
+                --content: rgb(196, 196, 197);
+                --hljs-bg: rgb(46, 46, 51);
+                --code-bg: rgb(55, 56, 62);
+                --border: rgb(51, 51, 51);
+            }
+
+            .list {
+                background: var(--theme);
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-track {
+                background: 0 0;
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-thumb {
+                border-color: var(--theme);
+            }
+        }
+
+    </style>
+</noscript><meta property="og:title" content="Validate JWT cookies sent to an Azure Functions application" />
+<meta property="og:description" content="Validate JWTs as cookies, that are sent to an Azure Functions application" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://dombarter.co.uk/posts/validate-jwt-cookies-in-dotnet-functions/" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2022-08-22T09:20:04&#43;01:00" />
+<meta property="article:modified_time" content="2022-08-22T09:20:04&#43;01:00" />
+
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Validate JWT cookies sent to an Azure Functions application"/>
+<meta name="twitter:description" content="Validate JWTs as cookies, that are sent to an Azure Functions application"/>
+
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position":  1 ,
+      "name": "Posts",
+      "item": "https://dombarter.co.uk/posts/"
+    }, 
+    {
+      "@type": "ListItem",
+      "position":  2 ,
+      "name": "Validate JWT cookies sent to an Azure Functions application",
+      "item": "https://dombarter.co.uk/posts/validate-jwt-cookies-in-dotnet-functions/"
+    }
+  ]
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "Validate JWT cookies sent to an Azure Functions application",
+  "name": "Validate JWT cookies sent to an Azure Functions application",
+  "description": "Validate JWTs as cookies, that are sent to an Azure Functions application",
+  "keywords": [
+    
+  ],
+  "articleBody": "Motivation I have a Vue.js SPA that communicates with a .NET 6 Web API for the majority of things. It uses JWTs in cookies for authentication and authorisation. The API generates the JWTs. However, I would like some Azure Functions (microservices) to perform scalable operations as to not stress the API. These Azure Functions will need authenticating otherwise anyone can call them.\nLet’s authenticate them using the JWT cookie our API has given us.\nNuGet Packages Install the following NuGet package.\n System.IdentityModel.Tokens.Jwt ( The package version must be lower than 6.11 due to https://github.com/Azure/azure-functions-host/issues/7878.\nApp Settings We need to set some details about our JWTs in our local.settings.json so they can be validated. These should match the details used by the API where the JWT is generated.\n{ \"Values\": { \"JwtKey\": \"ThisIsMySecretKey\", \"JwtIssuer\": \"https://localhost:7234/\", \"JwtAudience\": \"https://localhost:7234/\", \"JwtCookieName\": \"solar-access-token\" } } Token Validator Now we need to make a method (could be static, or passed via dependency injection), that will validate the request:\npublic static bool TokenIsValid(HttpRequest req) { try { string cookie = req.Cookies[Environment.GetEnvironmentVariable(\"JwtCookieName\")] ?? \"\"; var tokenParams = new TokenValidationParameters() { ValidateIssuer = true, ValidateAudience = true, ValidateLifetime = true, ValidateIssuerSigningKey = true, ValidIssuer = Environment.GetEnvironmentVariable(\"JwtIssuer\"), ValidAudience = Environment.GetEnvironmentVariable(\"JwtAudience\"), IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Environment.GetEnvironmentVariable(\"JwtKey\"))) }; new JwtSecurityTokenHandler().ValidateToken(cookie, tokenParams, out var securityToken); return true; } catch { return false; } } Token Validation We can now call this method in each Function, and the JWT within the cookie will be validated:\npublic static async Task Run([HttpTrigger(AuthorizationLevel.Anonymous, \"get\", \"post\", Route = null)] HttpRequest req) { // Validate the access token  if (!TokenValidator.TokenIsValid(req)) { return new UnauthorizedResult(); } } References  https://docs.microsoft.com/en-us/dotnet/api/system.identitymodel.tokens.jwt.jwtsecuritytokenhandler.validatetoken?view=azure-dotnet  ",
+  "wordCount" : "269",
+  "inLanguage": "en",
+  "datePublished": "2022-08-22T09:20:04+01:00",
+  "dateModified": "2022-08-22T09:20:04+01:00",
+  "author":{
+    "@type": "Person",
+    "name": "Dom Barter"
+  },
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "https://dombarter.co.uk/posts/validate-jwt-cookies-in-dotnet-functions/"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "Dom Barter",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https://dombarter.co.uk/favicon.ico"
+    }
+  }
+}
+</script>
+</head>
+
+<body class="" id="top">
+<script>
+    if (localStorage.getItem("pref-theme") === "dark") {
+        document.body.classList.add('dark');
+    } else if (localStorage.getItem("pref-theme") === "light") {
+        document.body.classList.remove('dark')
+    } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        document.body.classList.add('dark');
+    }
+
+</script>
+
+<header class="header">
+    <nav class="nav">
+        <div class="logo">
+            <a href="https://dombarter.co.uk/" accesskey="h" title="Dom Barter (Alt + H)">Dom Barter</a>
+            <div class="logo-switches">
+                <button id="theme-toggle" accesskey="t" title="(Alt + T)">
+                    <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                    </svg>
+                    <svg id="sun" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="5"></circle>
+                        <line x1="12" y1="1" x2="12" y2="3"></line>
+                        <line x1="12" y1="21" x2="12" y2="23"></line>
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                        <line x1="1" y1="12" x2="3" y2="12"></line>
+                        <line x1="21" y1="12" x2="23" y2="12"></line>
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                    </svg>
+                </button>
+            </div>
+        </div>
+        <ul id="menu">
+            <li>
+                <a href="https://dombarter.co.uk/posts/" title="Posts">
+                    <span>Posts</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://dombarter.co.uk/projects/" title="Projects">
+                    <span>Projects</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://dombarter.co.uk/search/" title="Search (Alt &#43; /)" accesskey=/>
+                    <span>Search</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+</header>
+<main class="main">
+
+<article class="post-single">
+  <header class="post-header">
+    <div class="breadcrumbs"><a href="https://dombarter.co.uk/">Home</a>&nbsp;»&nbsp;<a href="https://dombarter.co.uk/posts/">Posts</a></div>
+    <h1 class="post-title">
+      Validate JWT cookies sent to an Azure Functions application
+    </h1>
+    <div class="post-meta"><span title='2022-08-22 09:20:04 +0100 +0100'>August 22, 2022</span>&nbsp;·&nbsp;2 min&nbsp;·&nbsp;Dom Barter
+
+</div>
+  </header> <div class="toc">
+    <details >
+        <summary accesskey="c" title="(Alt + C)">
+            <span class="details">Table of Contents</span>
+        </summary>
+
+        <div class="inner"><ul>
+                <li>
+                    <a href="#motivation" aria-label="Motivation">Motivation</a></li>
+                <li>
+                    <a href="#nuget-packages" aria-label="NuGet Packages">NuGet Packages</a></li>
+                <li>
+                    <a href="#app-settings" aria-label="App Settings">App Settings</a></li>
+                <li>
+                    <a href="#token-validator" aria-label="Token Validator">Token Validator</a></li>
+                <li>
+                    <a href="#token-validation" aria-label="Token Validation">Token Validation</a></li>
+                <li>
+                    <a href="#references" aria-label="References">References</a>
+                </li>
+            </ul>
+        </div>
+    </details>
+</div>
+
+  <div class="post-content"><h1 id="motivation">Motivation<a hidden class="anchor" aria-hidden="true" href="#motivation">#</a></h1>
+<p>I have a Vue.js SPA that communicates with a .NET 6 Web API for the majority of things. It uses JWTs in cookies for authentication and authorisation. The API generates the JWTs. However, I would like some Azure Functions (microservices) to perform scalable operations as to not stress the API. These Azure Functions will need authenticating otherwise anyone can call them.</p>
+<p>Let&rsquo;s authenticate them using the JWT cookie our API has given us.</p>
+<h1 id="nuget-packages">NuGet Packages<a hidden class="anchor" aria-hidden="true" href="#nuget-packages">#</a></h1>
+<p>Install the following NuGet package.</p>
+<ul>
+<li>System.IdentityModel.Tokens.Jwt (&lt;= 6.10.2)</li>
+</ul>
+<p>The package version must be lower than 6.11 due to <a href="https://github.com/Azure/azure-functions-host/issues/7878">https://github.com/Azure/azure-functions-host/issues/7878</a>.</p>
+<h1 id="app-settings">App Settings<a hidden class="anchor" aria-hidden="true" href="#app-settings">#</a></h1>
+<p>We need to set some details about our JWTs in our <code>local.settings.json</code> so they can be validated. These should match the details used by the API where the JWT is generated.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-json" data-lang="json">{
+  <span style="color:#f92672">&#34;Values&#34;</span>: {
+    <span style="color:#f92672">&#34;JwtKey&#34;</span>: <span style="color:#e6db74">&#34;ThisIsMySecretKey&#34;</span>,
+    <span style="color:#f92672">&#34;JwtIssuer&#34;</span>: <span style="color:#e6db74">&#34;https://localhost:7234/&#34;</span>,
+    <span style="color:#f92672">&#34;JwtAudience&#34;</span>: <span style="color:#e6db74">&#34;https://localhost:7234/&#34;</span>,
+    <span style="color:#f92672">&#34;JwtCookieName&#34;</span>: <span style="color:#e6db74">&#34;solar-access-token&#34;</span>
+  }
+}
+</code></pre></div><h1 id="token-validator">Token Validator<a hidden class="anchor" aria-hidden="true" href="#token-validator">#</a></h1>
+<p>Now we need to make a method (could be static, or passed via dependency injection), that will validate the request:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">bool</span> TokenIsValid(HttpRequest req)
+{
+    <span style="color:#66d9ef">try</span>
+    {
+        <span style="color:#66d9ef">string</span> cookie = req.Cookies[Environment.GetEnvironmentVariable(<span style="color:#e6db74">&#34;JwtCookieName&#34;</span>)] ?? <span style="color:#e6db74">&#34;&#34;</span>;
+
+        <span style="color:#66d9ef">var</span> tokenParams = <span style="color:#66d9ef">new</span> TokenValidationParameters()
+        {
+            ValidateIssuer = <span style="color:#66d9ef">true</span>,
+            ValidateAudience = <span style="color:#66d9ef">true</span>,
+            ValidateLifetime = <span style="color:#66d9ef">true</span>,
+            ValidateIssuerSigningKey = <span style="color:#66d9ef">true</span>,
+            ValidIssuer = Environment.GetEnvironmentVariable(<span style="color:#e6db74">&#34;JwtIssuer&#34;</span>),
+            ValidAudience = Environment.GetEnvironmentVariable(<span style="color:#e6db74">&#34;JwtAudience&#34;</span>),
+            IssuerSigningKey = <span style="color:#66d9ef">new</span> SymmetricSecurityKey(Encoding.UTF8.GetBytes(Environment.GetEnvironmentVariable(<span style="color:#e6db74">&#34;JwtKey&#34;</span>)))
+        };
+
+        <span style="color:#66d9ef">new</span> JwtSecurityTokenHandler().ValidateToken(cookie, tokenParams, <span style="color:#66d9ef">out</span> <span style="color:#66d9ef">var</span> securityToken);
+        <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">true</span>;
+    }
+    <span style="color:#66d9ef">catch</span>
+    {
+        <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">false</span>;
+    }
+}
+</code></pre></div><h1 id="token-validation">Token Validation<a hidden class="anchor" aria-hidden="true" href="#token-validation">#</a></h1>
+<p>We can now call this method in each Function, and the JWT within the cookie will be validated:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">async</span> Task&lt;IActionResult&gt; Run([HttpTrigger(AuthorizationLevel.Anonymous, <span style="color:#e6db74">&#34;get&#34;</span>, <span style="color:#e6db74">&#34;post&#34;</span>, Route = <span style="color:#66d9ef">null</span>)] HttpRequest req)
+{
+    <span style="color:#75715e">// Validate the access token
+</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">if</span> (!TokenValidator.TokenIsValid(req))
+    {
+        <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">new</span> UnauthorizedResult();
+    }
+}
+</code></pre></div><h1 id="references">References<a hidden class="anchor" aria-hidden="true" href="#references">#</a></h1>
+<ul>
+<li><a href="https://docs.microsoft.com/en-us/dotnet/api/system.identitymodel.tokens.jwt.jwtsecuritytokenhandler.validatetoken?view=azure-dotnet">https://docs.microsoft.com/en-us/dotnet/api/system.identitymodel.tokens.jwt.jwtsecuritytokenhandler.validatetoken?view=azure-dotnet</a></li>
+</ul>
+
+
+  </div>
+
+  <footer class="post-footer">
+    <ul class="post-tags">
+    </ul>
+  </footer>
+</article>
+    </main>
+    
+<footer class="footer">
+    <span>&copy; 2022 <a href="https://dombarter.co.uk/">Dom Barter</a></span>
+    <span>
+        Powered by
+        <a href="https://gohugo.io/" rel="noopener noreferrer" target="_blank">Hugo</a> &
+        <a href="https://github.com/adityatelange/hugo-PaperMod/" rel="noopener" target="_blank">PaperMod</a>
+    </span>
+</footer>
+<a href="#top" aria-label="go to top" title="Go to Top (Alt + G)" class="top-link" id="top-link" accesskey="g">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 6" fill="currentColor">
+        <path d="M12 6H0l6-6z" />
+    </svg>
+</a>
+
+<script>
+    let menu = document.getElementById('menu')
+    if (menu) {
+        menu.scrollLeft = localStorage.getItem("menu-scroll-position");
+        menu.onscroll = function () {
+            localStorage.setItem("menu-scroll-position", menu.scrollLeft);
+        }
+    }
+
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener("click", function (e) {
+            e.preventDefault();
+            var id = this.getAttribute("href").substr(1);
+            if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView({
+                    behavior: "smooth"
+                });
+            } else {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView();
+            }
+            if (id === "top") {
+                history.replaceState(null, null, " ");
+            } else {
+                history.pushState(null, null, `#${id}`);
+            }
+        });
+    });
+
+</script>
+<script>
+    var mybutton = document.getElementById("top-link");
+    window.onscroll = function () {
+        if (document.body.scrollTop > 800 || document.documentElement.scrollTop > 800) {
+            mybutton.style.visibility = "visible";
+            mybutton.style.opacity = "1";
+        } else {
+            mybutton.style.visibility = "hidden";
+            mybutton.style.opacity = "0";
+        }
+    };
+
+</script>
+<script>
+    document.getElementById("theme-toggle").addEventListener("click", () => {
+        if (document.body.className.includes("dark")) {
+            document.body.classList.remove('dark');
+            localStorage.setItem("pref-theme", 'light');
+        } else {
+            document.body.classList.add('dark');
+            localStorage.setItem("pref-theme", 'dark');
+        }
+    })
+
+</script>
+<script>
+    document.querySelectorAll('pre > code').forEach((codeblock) => {
+        const container = codeblock.parentNode.parentNode;
+
+        const copybutton = document.createElement('button');
+        copybutton.classList.add('copy-code');
+        copybutton.innerHTML = 'copy';
+
+        function copyingDone() {
+            copybutton.innerHTML = 'copied!';
+            setTimeout(() => {
+                copybutton.innerHTML = 'copy';
+            }, 2000);
+        }
+
+        copybutton.addEventListener('click', (cb) => {
+            if ('clipboard' in navigator) {
+                navigator.clipboard.writeText(codeblock.textContent);
+                copyingDone();
+                return;
+            }
+
+            const range = document.createRange();
+            range.selectNodeContents(codeblock);
+            const selection = window.getSelection();
+            selection.removeAllRanges();
+            selection.addRange(range);
+            try {
+                document.execCommand('copy');
+                copyingDone();
+            } catch (e) { };
+            selection.removeRange(range);
+        });
+
+        if (container.classList.contains("highlight")) {
+            container.appendChild(copybutton);
+        } else if (container.parentNode.firstChild == container) {
+            
+        } else if (codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.nodeName == "TABLE") {
+            
+            codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.appendChild(copybutton);
+        } else {
+            
+            codeblock.parentNode.appendChild(copybutton);
+        }
+    });
+</script>
+</body>
+
+</html>

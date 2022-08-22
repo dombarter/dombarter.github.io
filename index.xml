@@ -6,7 +6,16 @@
     <description>Recent content on Dom Barter</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-gb</language>
-    <lastBuildDate>Thu, 18 Aug 2022 15:22:54 +0100</lastBuildDate><atom:link href="https://dombarter.co.uk/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Mon, 22 Aug 2022 09:20:04 +0100</lastBuildDate><atom:link href="https://dombarter.co.uk/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Validate JWT cookies sent to an Azure Functions application</title>
+      <link>https://dombarter.co.uk/posts/validate-jwt-cookies-in-dotnet-functions/</link>
+      <pubDate>Mon, 22 Aug 2022 09:20:04 +0100</pubDate>
+      
+      <guid>https://dombarter.co.uk/posts/validate-jwt-cookies-in-dotnet-functions/</guid>
+      <description>Validate JWTs as cookies, that are sent to an Azure Functions application</description>
+    </item>
+    
     <item>
       <title>Configure Vue.js with environment variables</title>
       <link>https://dombarter.co.uk/posts/configure-vuejs-with-environment-variables/</link>
