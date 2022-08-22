@@ -2,13 +2,16 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url>
-    <loc>https://dombarter.co.uk/</loc>
-    <lastmod>2022-08-17T14:53:28+01:00</lastmod>
+    <loc>https://dombarter.co.uk/posts/configure-vuejs-with-environment-variables/</loc>
+    <lastmod>2022-08-18T15:22:54+01:00</lastmod>
   </url><url>
-    <loc>https://dombarter.co.uk/posts/generate-typescript-client-from-swagger/</loc>
-    <lastmod>2022-08-17T14:53:28+01:00</lastmod>
+    <loc>https://dombarter.co.uk/</loc>
+    <lastmod>2022-08-18T15:22:54+01:00</lastmod>
   </url><url>
     <loc>https://dombarter.co.uk/posts/</loc>
+    <lastmod>2022-08-18T15:22:54+01:00</lastmod>
+  </url><url>
+    <loc>https://dombarter.co.uk/posts/generate-typescript-client-from-swagger/</loc>
     <lastmod>2022-08-17T14:53:28+01:00</lastmod>
   </url><url>
     <loc>https://dombarter.co.uk/posts/add-dotnet-jwts-for-spas-to-web-api/</loc>
