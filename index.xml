@@ -6,7 +6,16 @@
     <description>Recent content on Dom Barter</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-gb</language>
-    <lastBuildDate>Mon, 22 Aug 2022 09:20:04 +0100</lastBuildDate><atom:link href="https://dombarter.co.uk/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Thu, 25 Aug 2022 15:08:39 +0100</lastBuildDate><atom:link href="https://dombarter.co.uk/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Add integration tests to an existing .NET 6 Web API using Entity Framework, Identity and JWTs</title>
+      <link>https://dombarter.co.uk/posts/add-integration-tests-for-dotnet-web-api/</link>
+      <pubDate>Thu, 25 Aug 2022 15:08:39 +0100</pubDate>
+      
+      <guid>https://dombarter.co.uk/posts/add-integration-tests-for-dotnet-web-api/</guid>
+      <description>Test the full lifecycle of your API controllers using integration tests. Combined with in-memory databases you can fully mock your system and reproducible results. This approach even deals with cookies, so you can authenticate using a JWT in a cookie.</description>
+    </item>
+    
     <item>
       <title>Validate JWT cookies sent to an Azure Functions application</title>
       <link>https://dombarter.co.uk/posts/validate-jwt-cookies-in-dotnet-functions/</link>
