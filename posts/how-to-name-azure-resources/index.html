@@ -5,11 +5,11 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <meta name="robots" content="index, follow">
-<title>Llama Physics Engine | Dom Barter</title>
+<title>How to correctly name your Azure resources | Dom Barter</title>
 <meta name="keywords" content="">
-<meta name="description" content="It&rsquo;s llamas and physics. Who knows what could happen?">
+<meta name="description" content="Every wondered if there is a better way of naming your Azure resources than my-database and my-app? Well, there is.">
 <meta name="author" content="Dom Barter">
-<link rel="canonical" href="https://dombarter.co.uk/projects/llamas/">
+<link rel="canonical" href="https://dombarter.co.uk/posts/how-to-name-azure-resources/">
 <link crossorigin="anonymous" href="/assets/css/stylesheet.bc1149f4a72aa4858d3a9f71462f75e5884ffe8073ea9d6d5761d5663d651e20.css" integrity="sha256-vBFJ9KcqpIWNOp9xRi915YhP/oBz6p1tV2HVZj1lHiA=" rel="preload stylesheet" as="style">
 <script defer crossorigin="anonymous" src="/assets/js/highlight.f413e19d0714851f6474e7ee9632408e58ac146fbdbe62747134bea2fa3415e0.js" integrity="sha256-9BPhnQcUhR9kdOfuljJAjlisFG&#43;9vmJ0cTS&#43;ovo0FeA="
     onload="hljs.initHighlightingOnLoad();"></script>
@@ -56,16 +56,16 @@
         }
 
     </style>
-</noscript><meta property="og:title" content="Llama Physics Engine" />
-<meta property="og:description" content="It&rsquo;s llamas and physics. Who knows what could happen?" />
+</noscript><meta property="og:title" content="How to correctly name your Azure resources" />
+<meta property="og:description" content="Every wondered if there is a better way of naming your Azure resources than my-database and my-app? Well, there is." />
 <meta property="og:type" content="article" />
-<meta property="og:url" content="https://dombarter.co.uk/projects/llamas/" /><meta property="article:section" content="projects" />
-<meta property="article:published_time" content="2018-11-21T11:14:57+00:00" />
-<meta property="article:modified_time" content="2018-11-21T11:14:57+00:00" />
+<meta property="og:url" content="https://dombarter.co.uk/posts/how-to-name-azure-resources/" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2022-09-22T15:58:23+01:00" />
+<meta property="article:modified_time" content="2022-09-22T15:58:23+01:00" />
 
 <meta name="twitter:card" content="summary"/>
-<meta name="twitter:title" content="Llama Physics Engine"/>
-<meta name="twitter:description" content="It&rsquo;s llamas and physics. Who knows what could happen?"/>
+<meta name="twitter:title" content="How to correctly name your Azure resources"/>
+<meta name="twitter:description" content="Every wondered if there is a better way of naming your Azure resources than my-database and my-app? Well, there is."/>
 
 
 <script type="application/ld+json">
@@ -76,14 +76,14 @@
     {
       "@type": "ListItem",
       "position":  1 ,
-      "name": "Projects",
-      "item": "https://dombarter.co.uk/projects/"
+      "name": "Posts",
+      "item": "https://dombarter.co.uk/posts/"
     }, 
     {
       "@type": "ListItem",
       "position":  2 ,
-      "name": "Llama Physics Engine",
-      "item": "https://dombarter.co.uk/projects/llamas/"
+      "name": "How to correctly name your Azure resources",
+      "item": "https://dombarter.co.uk/posts/how-to-name-azure-resources/"
     }
   ]
 }
@@ -92,24 +92,24 @@
 {
   "@context": "https://schema.org",
   "@type": "BlogPosting",
-  "headline": "Llama Physics Engine",
-  "name": "Llama Physics Engine",
-  "description": "It\u0026rsquo;s llamas and physics. Who knows what could happen?",
+  "headline": "How to correctly name your Azure resources",
+  "name": "How to correctly name your Azure resources",
+  "description": "Every wondered if there is a better way of naming your Azure resources than my-database and my-app? Well, there is.",
   "keywords": [
     
   ],
-  "articleBody": "Ever wondered what happens when you fill a computer screen with llamas?\nNo I don’t think many people have!\nWell it turns out I wanted to find out…\nBuilt in plain HTML, CSS and JavaScript with help from Phaser.js - please go and enjoy my llama physics engine:\ndombarter.co.uk/llama/\nAnd if you’re interested in the source code:\nView GitHub repository\n",
-  "wordCount" : "60",
+  "articleBody": "Azure resources should be named like so, we’ll break down each section shortly.\n_From https://learn.microsoft.com/en-us/azure/cloud-adoption-framework/ready/azure-best-practices/resource-naming_\nResource Type The resource type is what type of infrastructure you are running. It could be a database, virtual machine or application insights etc. It’s recommended practice to use an abbreviated name such as ase, vm or ai. You can find the full list here: https://learn.microsoft.com/en-us/azure/cloud-adoption-framework/ready/azure-best-practices/resource-abbreviations\nWorkload/Application The workload/application is just a name that has some contextual meaning to you. Perhaps you’re building a shop web application, then you could use shop as your application.\nEnvironment The environment could be one of the following:\n Development - dev Staging - stag Production - prod  Azure Region The Azure region is an abbreviation of where the resource is geographically located. For example UK South would be uksouth. You can find the full list here: https://azuretracks.com/2021/04/current-azure-region-names-reference/\nInstance And finally, you may have more than one instance of a resource running - such as a virtual machine; just increment the number to denote this.\nResources  https://learn.microsoft.com/en-us/azure/cloud-adoption-framework/ready/azure-best-practices/resource-naming https://learn.microsoft.com/en-us/azure/cloud-adoption-framework/ready/azure-best-practices/resource-abbreviations https://azuretracks.com/2021/04/current-azure-region-names-reference/  ",
+  "wordCount" : "169",
   "inLanguage": "en",
-  "datePublished": "2018-11-21T11:14:57Z",
-  "dateModified": "2018-11-21T11:14:57Z",
+  "datePublished": "2022-09-22T15:58:23+01:00",
+  "dateModified": "2022-09-22T15:58:23+01:00",
   "author":{
     "@type": "Person",
     "name": "Dom Barter"
   },
   "mainEntityOfPage": {
     "@type": "WebPage",
-    "@id": "https://dombarter.co.uk/projects/llamas/"
+    "@id": "https://dombarter.co.uk/posts/how-to-name-azure-resources/"
   },
   "publisher": {
     "@type": "Organization",
@@ -185,24 +185,64 @@
 
 <article class="post-single">
   <header class="post-header">
-    <div class="breadcrumbs"><a href="https://dombarter.co.uk/">Home</a>&nbsp;»&nbsp;<a href="https://dombarter.co.uk/projects/">Projects</a></div>
+    <div class="breadcrumbs"><a href="https://dombarter.co.uk/">Home</a>&nbsp;»&nbsp;<a href="https://dombarter.co.uk/posts/">Posts</a></div>
     <h1 class="post-title">
-      Llama Physics Engine
+      How to correctly name your Azure resources
     </h1>
-    <div class="post-meta"><span title='2018-11-21 11:14:57 +0000 UTC'>November 21, 2018</span>&nbsp;·&nbsp;1 min&nbsp;·&nbsp;Dom Barter
+    <div class="post-meta"><span title='2022-09-22 15:58:23 +0100 +0100'>September 22, 2022</span>&nbsp;·&nbsp;1 min&nbsp;·&nbsp;Dom Barter
 
 </div>
-  </header> 
+  </header> <div class="toc">
+    <details >
+        <summary accesskey="c" title="(Alt + C)">
+            <span class="details">Table of Contents</span>
+        </summary>
 
-  <div class="post-content"><p><img loading="lazy" src="/images/llamas.png" alt="Llamas"  />
-</p>
-<p>Ever wondered what happens when you fill a computer screen with llamas?</p>
-<p>No I don&rsquo;t think many people have!</p>
-<p>Well it turns out I wanted to find out&hellip;</p>
-<p>Built in plain HTML, CSS and JavaScript with help from Phaser.js - please go and enjoy my llama physics engine:</p>
-<p><a href="https://dombarter.co.uk/llama/">dombarter.co.uk/llama/</a></p>
-<p>And if you&rsquo;re interested in the source code:</p>
-<p><a href="https://github.com/dombarter/llama">View GitHub repository</a></p>
+        <div class="inner"><ul><ul>
+                <li>
+                    <a href="#resource-type" aria-label="Resource Type">Resource Type</a></li>
+                <li>
+                    <a href="#workloadapplication" aria-label="Workload/Application">Workload/Application</a></li>
+                <li>
+                    <a href="#environment" aria-label="Environment">Environment</a></li>
+                <li>
+                    <a href="#azure-region" aria-label="Azure Region">Azure Region</a></li>
+                <li>
+                    <a href="#instance" aria-label="Instance">Instance</a></li></ul>
+                    
+                <li>
+                    <a href="#resources" aria-label="Resources">Resources</a>
+                </li>
+            </ul>
+        </div>
+    </details>
+</div>
+
+  <div class="post-content"><p>Azure resources should be named like so, we&rsquo;ll break down each section shortly.</p>
+<p><img loading="lazy" src="/images/resource-naming.png" alt="Resource naming"  />
+
+_From <a href="https://learn.microsoft.com/en-us/azure/cloud-adoption-framework/ready/azure-best-practices/resource-naming_">https://learn.microsoft.com/en-us/azure/cloud-adoption-framework/ready/azure-best-practices/resource-naming_</a></p>
+<h2 id="resource-type">Resource Type<a hidden class="anchor" aria-hidden="true" href="#resource-type">#</a></h2>
+<p>The resource type is what type of infrastructure you are running. It could be a database, virtual machine or application insights etc. It&rsquo;s recommended practice to use an abbreviated name such as <code>ase</code>, <code>vm</code> or <code>ai</code>. You can find the full list here: <a href="https://learn.microsoft.com/en-us/azure/cloud-adoption-framework/ready/azure-best-practices/resource-abbreviations">https://learn.microsoft.com/en-us/azure/cloud-adoption-framework/ready/azure-best-practices/resource-abbreviations</a></p>
+<h2 id="workloadapplication">Workload/Application<a hidden class="anchor" aria-hidden="true" href="#workloadapplication">#</a></h2>
+<p>The workload/application is just a name that has some contextual meaning to you. Perhaps you&rsquo;re building a shop web application, then you could use <code>shop</code> as your application.</p>
+<h2 id="environment">Environment<a hidden class="anchor" aria-hidden="true" href="#environment">#</a></h2>
+<p>The environment could be one of the following:</p>
+<ul>
+<li>Development - <code>dev</code></li>
+<li>Staging - <code>stag</code></li>
+<li>Production - <code>prod</code></li>
+</ul>
+<h2 id="azure-region">Azure Region<a hidden class="anchor" aria-hidden="true" href="#azure-region">#</a></h2>
+<p>The Azure region is an abbreviation of where the resource is geographically located. For example UK South would be <code>uksouth</code>. You can find the full list here: <a href="https://azuretracks.com/2021/04/current-azure-region-names-reference/">https://azuretracks.com/2021/04/current-azure-region-names-reference/</a></p>
+<h2 id="instance">Instance<a hidden class="anchor" aria-hidden="true" href="#instance">#</a></h2>
+<p>And finally, you may have more than one instance of a resource running - such as a virtual machine; just increment the number to denote this.</p>
+<h1 id="resources">Resources<a hidden class="anchor" aria-hidden="true" href="#resources">#</a></h1>
+<ul>
+<li><a href="https://learn.microsoft.com/en-us/azure/cloud-adoption-framework/ready/azure-best-practices/resource-naming">https://learn.microsoft.com/en-us/azure/cloud-adoption-framework/ready/azure-best-practices/resource-naming</a></li>
+<li><a href="https://learn.microsoft.com/en-us/azure/cloud-adoption-framework/ready/azure-best-practices/resource-abbreviations">https://learn.microsoft.com/en-us/azure/cloud-adoption-framework/ready/azure-best-practices/resource-abbreviations</a></li>
+<li><a href="https://azuretracks.com/2021/04/current-azure-region-names-reference/">https://azuretracks.com/2021/04/current-azure-region-names-reference/</a></li>
+</ul>
 
 
   </div>
