@@ -3,12 +3,15 @@
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url>
     <loc>https://dombarter.co.uk/</loc>
-    <lastmod>2022-09-22T15:58:23+01:00</lastmod>
-  </url><url>
-    <loc>https://dombarter.co.uk/posts/how-to-name-azure-resources/</loc>
-    <lastmod>2022-09-22T15:58:23+01:00</lastmod>
+    <lastmod>2022-09-22T16:11:07+01:00</lastmod>
   </url><url>
     <loc>https://dombarter.co.uk/posts/</loc>
+    <lastmod>2022-09-22T16:11:07+01:00</lastmod>
+  </url><url>
+    <loc>https://dombarter.co.uk/posts/write-a-github-actions-to-build-test-and-deploy-your-dotnet-api/</loc>
+    <lastmod>2022-09-22T16:11:07+01:00</lastmod>
+  </url><url>
+    <loc>https://dombarter.co.uk/posts/how-to-name-azure-resources/</loc>
     <lastmod>2022-09-22T15:58:23+01:00</lastmod>
   </url><url>
     <loc>https://dombarter.co.uk/posts/add-integration-tests-for-dotnet-web-api/</loc>
